@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+# Use include() to add paths from the catalog application
+from django.urls import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('review/',include('review.urls')),
 ]
