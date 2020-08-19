@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Mobile Specific Meta -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Author Meta -->
+        <meta name="author" content="codepixer">
+        <!-- Meta Description -->
+        <meta name="description" content="">
+        <!-- Meta Keyword -->
+        <meta name="keywords" content="">
+        <!-- meta character set -->
+        <meta charset="UTF-8">
+        <title>Book Library</title>
+        {% load static %}
+        {% block css %}{% endblock %}
+    </head>
+    <body>
+        <header id="header">
+            {% include "header.html" %}
+        </header>
+        <!-- start banner Area -->
+        {% block banner %}{% endblock %}
+        <main role="main" class="container pageContent pt-50 pb-50">
+            <div class="row">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        <footer class="footer-area section-gap">
+            {% include "footer.html" %}
+        </footer>
+        {% block js %}{% endblock %}
+    </body>
+</html>
