@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+{% load static %}
+{% load i18n %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+<h3>{% trans 'Create new account' %}</h3>
+<form method="post" class="formsWidth">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-success">{% trans 'Register' %}</button>
+</form>
+{% trans 'Do you have a account' %} ? <a href="{% url 'login' %}">{% trans 'Click here to Login' %}</a>
+{% endblock content %}

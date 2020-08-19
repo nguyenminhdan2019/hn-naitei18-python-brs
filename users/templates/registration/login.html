@@ -1,8 +1,5 @@
 {% extends "base_generic.html" %}
 {% load static %}
-{% load i18n %}
-{% load phrase_i18n %}
-{% phrase_javascript %}
 
 {% block banner %}
     <section class="banner-area" style="height: 800px">
@@ -25,7 +22,16 @@
         </div>
     </section>
 {% endblock %}
+
+{% load crispy_forms_tags %}
 {% block content %}
-    <p>Welcome to Book Review Website! This is block content.</p>
-{% endblock %}
+    <form method="post" class="formsWidth">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Login</button>
+    </form>
+    {% load i18n %}
+    {% trans 'Create new user account:' %}  <a href="{% url 'signup' %}">Register here</a> <br>
+    {% trans 'Forgot your password?' %}  <a href="{% url 'password_reset' %}">Reset password</a>
+{% endblock content %}
 

@@ -13,6 +13,8 @@ from pathlib import Path
 import environ
 import os
 
+from django.utils.translation import ugettext_lazy as _
+
 env = environ.Env()
 # reading .env file
 environ.Env.read_env()
@@ -43,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'review',
+    'users',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+
 ]
 
 ROOT_URLCONF = 'BookReviewingSystem.urls'
@@ -113,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'vn-vn'
 
 TIME_ZONE = 'UTC'
 
@@ -128,3 +134,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LANGUAGES = (
+    ('en-us', _('English')),
+    ('vn-vn', _('Vietnamese')),
+)
+
+
