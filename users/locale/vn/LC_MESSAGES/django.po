@@ -1,0 +1,46 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-08-21 11:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/registration/login.html:34
+msgid "Create new user account:"
+msgstr " Tạo Tài Khoản"
+
+#: templates/registration/login.html:35
+msgid "Forgot your password?"
+msgstr "Có phải bạn quên mật khẩu hay không ?"
+
+#: templates/registration/signup.html:9
+msgid "Create new account"
+msgstr "Nếu thích, Hãy tạo một tài khoản "
+
+#: templates/registration/signup.html:13
+msgid "Register"
+msgstr "Đăng Ký"
+
+#: templates/registration/signup.html:15
+msgid "Do you have a account"
+msgstr "Bạn đã có tài khoản"
+
+#: templates/registration/signup.html:15
+msgid "Click here to Login"
+msgstr "Bấm vào để Login"
+
+#: views.py:26
+msgid "Now you are registered, try to log in!"
+msgstr "Đăng ký thành công , Hãy đăng nhập"
