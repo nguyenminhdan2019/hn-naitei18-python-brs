@@ -3,7 +3,6 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
@@ -22,6 +21,27 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse('book-detail', args=[str(self.id)])
+
+    def get_vote(self):
+        if self.vote == int(self.vote):
+            self.vote = int(self.vote)
+        return self.vote
+
+    @property
+    def actual_rating(self):
+        list_of_stars = []
+        for star in range(self.get_vote()):
+            list_of_stars.append(star)
+        return list_of_stars
+
+    @property
+    def hidden_rating(self):
+        list_of_stars = []
+        for star in range(5 - self.get_vote()):
+            list_of_stars.append(star)
+        return list_of_stars
 
 class BookMark(models.Model):
     book = models.ForeignKey('Book', on_delete=models.CASCADE)

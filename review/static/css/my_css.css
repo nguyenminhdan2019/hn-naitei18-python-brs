@@ -1,0 +1,59 @@
+
+.lastBooksContainer {
+  margin: 10px auto;
+  width: 90% !important;
+}
+
+.bookCard {
+  padding: 10px 10px;
+  text-align: center;
+}
+.cardBorder {
+  min-height: 340px;
+  padding-top: 15px;
+  box-shadow: 3px 3px 10px 0px black;
+}
+
+.book_image {
+  max-width: 200px;
+  max-height: 200px;
+  margin: 0 auto;
+}
+.all_book_item {
+  width: 200px;
+  height: 320px;
+}
+.book_detail {
+  width: 100%;
+}
+.book_top {
+  background: #ffffff;
+  width: 100% !important;
+  margin-bottom: 20px !important;
+}
+.single-course {
+  padding: 20px !important;
+}
+.single-book {
+  padding: 2px !important;
+}
+.book_image_detail {
+  width: 85% !important;
+}
+.book_title {
+  color: #f53f51;
+  margin: 15px;
+}
+.line_space {
+  margin: 15px;
+  color: #070001;
+}
+.zoom {
+  transition: transform .1s;
+}
+
+.zoom:hover {
+  -ms-transform: scale(1.1); /* IE 9 */
+  -webkit-transform: scale(1.1); /* Safari 3-8 */
+  transform: scale(1.1); 
+}

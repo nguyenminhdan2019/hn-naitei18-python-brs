@@ -115,11 +115,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
-
 LANGUAGE_CODE = 'vn-vn'
+
 
 TIME_ZONE = 'UTC'
 
@@ -141,3 +138,5 @@ LANGUAGES = (
 )
 
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

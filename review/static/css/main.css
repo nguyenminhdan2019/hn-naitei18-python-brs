@@ -2168,7 +2168,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 .section-gap {
-  padding: 120px 0;
+  padding: 10px 0;
 }
 
 .section-title {
@@ -2609,7 +2609,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   padding: 10px 20px;
   position: absolute;
   margin-top: -80px;
-  margin-left: 30px;
+  margin-left: -4px !important;
 }
 
 .single-course .price {
