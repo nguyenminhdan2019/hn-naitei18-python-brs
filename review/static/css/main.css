@@ -1883,6 +1883,7 @@ h1, h2, h3, h4, h5, h6 {
   right: 0;
   transition: all 0.5s;
   z-index: 997;
+  background-color: #372723;
 }
 
 #header.header-scrolled {
@@ -1993,7 +1994,7 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (min-width: 1024px) {
   #nav-menu-container {
-    padding-right: 60px;
+    padding-right: 10px;
   }
 }
 
@@ -2010,8 +2011,7 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-block;
   color: #fff;
   font-weight: 400;
-  font-size: 12px;
-  text-transform: uppercase;
+  font-size: 15px;
   outline: none;
 }
 
@@ -2035,7 +2035,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #333;
   transition: 0.3s;
   display: block;
-  font-size: 12px;
+  font-size: 13px;
   text-transform: none;
 }
 
