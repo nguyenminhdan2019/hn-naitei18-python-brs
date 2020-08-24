@@ -1,5 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+from django.contrib import messages
+
+from .forms import BookForm
+
+from django.core.mail import send_mail
+
+import os
+import environ
+
+env = environ.Env()
+# reading .env file
+environ.Env.read_env()
+
 from django.views.generic import (
     DetailView,
     FormView,
@@ -9,6 +24,8 @@ from django.views.generic import (
 
 from .models import (
     Book,
+    Request,
+
 )
 
 def index(request):
@@ -54,3 +71,29 @@ class SearchBookListView(ListView):
                 books_by_title = queryset.filter(title__icontains=word)
                 return books_by_title
         return queryset
+@login_required
+def request_form(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            author = form.cleaned_data['author']
+            new_request = Request(title = title, author = author, user = request.user )
+            new_request.save()
+            messages.success(request, "Your request is sent")
+            mess = '{0} is send a a request to admin'.format(request.user)
+            send_mail(
+                subject= 'Request book',
+                message='{0} request book with title {1}'.format(request.user, author),
+                from_email = env('EMAIL_HOST_USER'),
+                recipient_list = [env('EMAIL_ADMIN'), ],
+                )
+            return redirect('index')
+    if request.user.is_authenticated:
+        form = BookForm()
+        # form.fields['name'].initial = request.user.username
+        form.fields['title'].widget.attrs['placeholder'] = 'Write title here'
+        form.fields['author'].widget.attrs['placeholder'] = 'Write author here'
+        return render(request, 'books/request.html', {'form': form})
+
+
