@@ -1,1 +1,29 @@
-<h1> user detail </h1>
+{% extends "base_generic.html" %}
+{% block banner %}{% endblock %}
+{% block content %}
+<div class="row pt-70">
+    <div class="col-md-3">
+        <div class="username text-center">
+            <img style="margin-bottom:15px;" src="{{ user.profile.image.url }}" alt="User Photo"/>
+            <h4>
+                <strong>{{ user.username }}</strong>
+            </h4>
+            <br>
+            <div>
+                <a href="{% url 'UserUpdate' %}"><button class="btn btn-success">Edit Profile</button></a>
+                <a href="{% url 'ProfileUpdate' %}"><button class="btn btn-success">Edit Avatar</button></a>
+            </div>
+            <br>
+            <br>
+            <div>
+                <p><strong>Join date</strong> <br>{{ user.date_joined|date:"F j, Y" }}</p>
+                <p><strong>Last login date </strong><br>{{ user.last_login|date:"F j, Y" }}</p>
+                <p><strong>Email </strong><br>{{ user.email }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <p>Your News Feed</p>
+    </div>
+</div>
+{% endblock content %}

@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'review',
-    'users',
+    'users.apps.UsersConfig',
     'crispy_forms',
 ]
 
@@ -58,7 +58,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-
 ]
 
 ROOT_URLCONF = 'BookReviewingSystem.urls'
@@ -137,6 +136,10 @@ LANGUAGES = (
     ('vn-vn', _('Vietnamese')),
 )
 
+LOGIN_REDIRECT_URL = '/review/'
+LOGOUT_REDIRECT_URL = '/review/'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

@@ -132,3 +132,4 @@ dmypy.json
 .pyre/
 # evironment
 .env
+/media/profile_pics
