@@ -26,6 +26,7 @@
         <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        <link rel="stylesheet" href="{% static 'css/my_css.css' %}">
         {% endblock %}
     </head>
     <body>
@@ -39,14 +40,22 @@
                 <div class="container">
                     <div class="row fullscreen d-flex align-items-center justify-content-start">
                         <div class="banner-content col-lg-7">
-                            <h5 class="text-white text-uppercase">{% trans 'Author: HN-SUN*-2020' %}</h5>
-                            <h1 class="text-uppercase">
-                                <!-- {% trans 'New Adventure' %} -->
-                            </h1>
-                            <p class="text-white pt-20 pb-20">
-                                <!-- Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod temp <br> or incididunt ut labore et dolore magna aliqua. Ut enim ad minim. -->
-                            </p>
-                            <a href="#" class="primary-btn text-uppercase">{% trans 'Review now' %}</a>
+                            <div><h1>Book Review</h1></div>
+                            <br>
+                            <div>
+                                <form class="searchForm px-5 py-3" action="{% url 'search' %}" method=" GET" style="background-color: white; border-radius: 10px">
+                                    <br>
+                                    <div class="form-group row">
+                                        <select data-trigger="" name="choice" class="col-md-3">
+                                            <option placeholder="" value="title">Title</option>
+                                            <option value="category">Category</option>
+                                            <option value="author">Author</option>
+                                        </select>
+                                        <input class="form-control col-md-8" required="required" name="word" type="text" placeholder="Enter Keywords">
+                                        <button type="submit" class="btn btn-primary form-control col-md-1"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                         <div class="col-lg-5 banner-right">
                             <img class="img-fluid" src="{%static 'img/header-img.png' %}" alt="">
