@@ -33,3 +33,24 @@ class BookDetailView(DetailView):
     def book_detail_view(request, primary_key):
         book = get_object_or_404(Book, pk=primary_key)
         return render(request, 'books/book_detail.html', context={'book': book})
+
+class SearchBookListView(ListView):
+    template_name = "books/book_search_result.html"
+    model = Book
+    paginate_by = 6
+
+    def get_queryset(self):
+        queryset = super(SearchBookListView, self).get_queryset()
+        choice = self.request.GET.get("choice")
+        word = self.request.GET.get("word")
+        if word:
+            if choice == "category":
+                books_by_category = queryset.filter(category__name__icontains=word)
+                return books_by_category
+            elif choice == "author":
+                books_by_author = queryset.filter(author__icontains=word)
+                return books_by_author
+            else:
+                books_by_title = queryset.filter(title__icontains=word)
+                return books_by_title
+        return queryset
