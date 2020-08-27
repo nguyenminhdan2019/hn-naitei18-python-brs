@@ -17,18 +17,27 @@ env = environ.Env()
 # reading .env file
 environ.Env.read_env()
 
+from django.forms import model_to_dict
+from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect, reverse
+from django.http import Http404, HttpResponseForbidden, JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views import generic
 from django.views.generic import (
+    View,
     DetailView,
     FormView,
     ListView,
     TemplateView,
     UpdateView)
+from django.views.generic.edit import FormMixin
 
 from .models import (
     Book,
     Request,
     Rating,
-    Comment
+    Comment,
+    BookMark,
 )
 from .forms import (
     ReviewForm,
@@ -58,12 +67,21 @@ class BookDetailView(DetailView):
     review_form = ReviewForm()
     comment_form = CommentForm()
 
-    def book_detail_view(request, primary_key):
-        book = get_object_or_404(Book, pk=primary_key)
-        return render(request, 'books/book_detail.html', context={'book': book})
+    def get_success_url(self):
+        return reverse('book-detail', kwargs={'pk': self.object.pk})
+
+    # def book_detail_view(self, request, primary_key):
+    #     book = get_object_or_404(Book, pk=primary_key)
+    #     bookmark = BookMark.objects.filter(user=self.request.user.id, book=book.id)
+    #     print(bookmark)
+    #     return render(request, 'books/book_detail.html', context={'book': book, 'bookmark': bookmark})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        book = self.get_object()
+        context['book'] = book
+        if BookMark.objects.filter(user=self.request.user.id, book=book.id).first():
+            context['bookmark'] = BookMark.objects.filter(user=self.request.user.id, book=book.id).first()
         context['review_form'] = self.review_form
         context['comment_form'] = self.comment_form
         context['ratings'] = Rating.objects.filter(book=self.object)
@@ -113,6 +131,7 @@ class SearchBookListView(ListView):
                 books_by_title = queryset.filter(title__icontains=word)
                 return books_by_title
         return queryset
+
 @login_required
 def request_form(request):
     if request.method == 'POST':
@@ -146,3 +165,57 @@ def list_request(request):
     except requests.DoesNotExist:
         raise Http404('Request does not exist')
     return render(request, 'books/list_request.html', context={'requests': requests})
+
+class MarkFavorite(generic.View):
+    def post(self, request, pk):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        try:
+            mark = BookMark.objects.get(user = self.request.user, book = Book.objects.get(id=pk))
+            mark.fa_status = self.request.POST['fa_status']
+            if mark.fa_status == 'fa':
+                stt = 'fa'
+            else:
+                stt = 'un_fa'
+            mark.save()
+            return JsonResponse({'serializedData': model_to_dict(mark), 'stt': stt}, status=200)
+        except:
+            mark = BookMark()
+            mark.user = self.request.user
+            mark.book = Book.objects.get(id=pk)
+            mark.fa_status = self.request.POST['fa_status']
+            if mark.fa_status == 'fa':
+                stt = 'fa'
+            else:
+                stt = 'un_fa'
+            mark.save()
+            return JsonResponse({'serializedData': model_to_dict(mark), 'stt': stt}, status=200)
+
+class MarkRead(generic.View):
+    def post(self, request, pk):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        try:
+            mark = BookMark.objects.get(user = self.request.user, book = Book.objects.get(id=pk))
+            mark.mark_status = self.request.POST['mark_status']
+            if mark.mark_status == 'nr':
+                stt = 'nr'
+            elif mark.mark_status == 'r_ing' :
+                stt = 'r_ing'
+            else:
+                stt = 'r_ed'
+            mark.save()
+            return JsonResponse({'serializedData': model_to_dict(mark), 'stt': stt}, status=200)
+        except:
+            mark = BookMark()
+            mark.user = self.request.user
+            mark.book = Book.objects.get(id=pk)
+            mark.mark_status = self.request.POST['mark_status']
+            if mark.mark_status == 'nr':
+                stt = 'nr'
+            elif mark.mark_status == 'r_ing' :
+                stt = 'r_ing'
+            else:
+                stt = 'r_ed'
+            mark.save()
+            return JsonResponse({'serializedData': model_to_dict(mark), 'stt': stt}, status=200)

@@ -48,16 +48,33 @@ class Book(models.Model):
 class BookMark(models.Model):
     book = models.ForeignKey('Book', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('book', 'user',)
+
     MARK_STATUS = (
-        ('r', 'Readed'),
-        ('n', 'Reading'),
+        ('nr', 'Not read'),
+        ('r_ed', 'Readed'),
+        ('r_ing', 'Reading'),
     )
-    status = models.CharField(
-        max_length=1,
+    mark_status = models.CharField(
+        max_length=5,
         choices=MARK_STATUS,
         blank=True,
-        default='n',
+        default='nr',
         help_text='Book has not been read',
+    )
+
+    FAVORITE_STATUS = (
+        ('fa', 'Favorite'),
+        ('un_fa', 'Unfavorite'),
+    )
+    fa_status = models.CharField(
+        max_length=5,
+        choices=FAVORITE_STATUS,
+        blank=True,
+        default='un_fa',
+        help_text='Book has not been mark favorite'
     )
 
 

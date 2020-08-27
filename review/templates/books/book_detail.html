@@ -3,20 +3,47 @@
 {% block banner %}{% endblock %}
 {% block content %}
 <div class="row book_detail" style="width: 100%;">
-  <div class="col-md-4 bookDetailLeftSide text-center">
-      <img class="book_image_detail" src="{{ book.image.url }}" alt=""> <br>
-      <div class="stars mt-2 mb-3" style="font-size: 20px;">
-        {% if book.actual_rating %}
-            {% for rate in book.actual_rating %}
-                <span class="fa fa-star checked" style="color : yellow"></span>
-            {% endfor %}
-            {% for rate in book.hidden_rating %}
-                <span class="fa fa-star" style="color : silver"></span>
-            {% endfor %}
-        {% else %}
+    <div class="col-md-4 bookDetailLeftSide text-center">
+        <img class="book_image_detail" src="{{ book.image.url }}" alt=""> <br>
+        <div class="stars mt-2 mb-3" style="font-size: 20px;">
+            {% if book.actual_rating %}
+                {% for rate in book.actual_rating %}
+                    <span class="fa fa-star checked" style="color : yellow"></span>
+                {% endfor %}
+                {% for rate in book.hidden_rating %}
+                    <span class="fa fa-star" style="color : silver"></span>
+                {% endfor %}
+            {% else %}
             <h6>Nobody rated</h6>
+            {% endif %}
+        </div>
+        <div class="row">
+        {% if user.is_authenticated %}
+            <div class="col-md-2"></div>
+            <div class="col-md-4">
+                <form class="" method="post" data-url="{% url 'mark-favorite' book.id %}" id="markFavoriteForm" book_id="{{ book.id }}">
+                    {% csrf_token %}
+                    <input type="hidden" name="user" value="{{ user }}">
+                    <input type="hidden" name="book" value="{{ book.id }}">
+                    <input type="hidden" name="fa_status" id="fa_status" value="{% if bookmark.fa_status == 'fa' %}un_fa{% else %}fa{% endif %}">
+                    <input type="button" class="btn btn-outline-success" id="markFavoriteButton" value="{% if bookmark.fa_status == 'fa' %}Unfavorite{% else %}Favorite{% endif %}">
+                </form>
+            </div>
+            <div class="col-md-4">
+                <form class="" method="post" data-url="{% url 'mark-read' book.id %}" id="markReadForm" book_id="{{ book.id }}">
+                    {% csrf_token %}
+                    <input type="hidden" name="user" value="{{ user }}">
+                    <input type="hidden" name="book" value="{{ book.id }}">
+                    <select class="ui dropdown btn btn-outline-success" name="mark_status" id="markReadButton">
+                        <option value="nr" {% if not bookmark.mark_status or bookmark.mark_status == 'nr' %}selected{% endif %}>Not Read</option>
+                        <option value="r_ing" {% if bookmark.mark_status == 'r_ing' %}selected{% endif %}>Reading</option>
+                        <option value="r_ed" {% if bookmark.mark_status == 'r_ed' %}selected{% endif %}>Readed</option>
+                    </select>
+                </form>
+            </div>
         {% endif %}
-    </div>
+        </div>
+    </form>
   </div>
   <div class="col-md-8">
       <h3 class="book_title"><strong>{{ book.title }}</strong> </h3><br>
