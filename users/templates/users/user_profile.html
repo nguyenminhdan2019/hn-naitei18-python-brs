@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+{% block banner %}{% endblock %}
+{% block content %}
+<div class="row pt-70">
+    <div class="col-md-3">
+        <div class="username text-center">
+            <img style="margin-bottom:15px;" src="{{ user.profile.image.url }}" alt="User Photo"/>
+            <h4>
+                <strong>{{ to_user.username }}</strong>
+            </h4>
+            <br>
+            <div class="col-md-3 user-pad text-center">
+                <form action="{% url 'AddFollow' to_user.id%}" method='POST'>
+                    <button type="submit" id= "follow" style="background-color: #34b1eb;" class="btn btn-secondary"name ="follow" > {% if is_followed %} UNFOLLOW {% else %} FOLLOW {% endif %} </button>
+                </form>
+            </div>
+            <br>
+            <br>
+            <div>
+                <p><strong>Follower: </strong>{{follower}}</p>
+                <p><strong>Following: </strong>{{following}}</p>
+                <p><strong>Email </strong>{{ to_user.email }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <p>Your News Feed</p>
+    </div>
+</div>
+{% endblock content %}
