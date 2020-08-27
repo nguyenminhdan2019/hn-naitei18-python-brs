@@ -198,6 +198,7 @@ class MarkRead(generic.View):
         try:
             mark = BookMark.objects.get(user = self.request.user, book = Book.objects.get(id=pk))
             mark.mark_status = self.request.POST['mark_status']
+<<<<<<< HEAD
             if mark.mark_status == 'nr':
                 stt = 'nr'
             elif mark.mark_status == 'r_ing' :
@@ -206,6 +207,10 @@ class MarkRead(generic.View):
                 stt = 'r_ed'
             mark.save()
             return JsonResponse({'serializedData': model_to_dict(mark), 'stt': stt}, status=200)
+=======
+            mark.save()
+            return JsonResponse({'serializedData': model_to_dict(mark)}, status=200)
+>>>>>>> 2c7c16d... Mark a book
         except:
             mark = BookMark()
             mark.user = self.request.user
