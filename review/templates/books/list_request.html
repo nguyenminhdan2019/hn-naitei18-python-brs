@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+{% block banner %}{% endblock %}
+{% block content %}
+<div class="row pt-70">
+    <div class="col-md-3">
+        <div class="username text-center">
+            <img style="margin-bottom:15px;" src="{{ user.profile.image.url }}" alt="User Photo"/>
+            <h4>
+                <strong>List Request By : {{ request.user.username }}</strong>
+            </h4>
+            {% if requests %}
+                {% for request_book in requests %}
+                    <ul style="line-height: 180%">
+                        <li>Tittle Book : {{request_book.title}}</li>
+                        <li>Author : {{request_book.author}}</li>
+                        <li>Status : {{request_book.status}}</li>
+                        <!-- chua lay duoc cai reviewing ma chi la rv hiu hiu -->
+                    </ul>
+                {% endfor %}
+            {% else %}
+                <p>there are not request by {{request.user}}</p>     
+            {% endif %}               
+        </div>
+    </div>
+</div>
+{% endblock content %}
