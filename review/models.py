@@ -81,9 +81,37 @@ class Request(models.Model):
 
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    star = models.IntegerField()
+    RATE_CHOICE = (
+        (1, 'Awful'),
+        (2, 'Fair'),
+        (3, 'Good'),
+        (4, 'Great'),
+        (5, 'Excellent'),
+    )
+    star = models.IntegerField(
+        choices=RATE_CHOICE,
+        default=5,
+    )
+    # review_id = models.AutoField(primary_key=True)
     review = models.TextField()
     book = models.ForeignKey('Book', on_delete=models.CASCADE)
+
+    @property
+    def actual_rating(self):
+        list_of_stars = []
+        for star in range(self.star):
+            list_of_stars.append(star)
+        return list_of_stars
+
+    @property
+    def hidden_rating(self):
+        list_of_stars = []
+        for star in range(5 - self.star):
+            list_of_stars.append(star)
+        return list_of_stars
+
+    def get_id(self):
+        return self.get_id()
 
 
 class Comment(models.Model):
