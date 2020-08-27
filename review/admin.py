@@ -1,7 +1,4 @@
 from django.contrib import admin
-from .models import Book, Category
-
-# Register your models here.
 from .models import (
     Book,
     Category,
