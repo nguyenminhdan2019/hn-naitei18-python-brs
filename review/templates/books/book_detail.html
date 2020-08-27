@@ -24,8 +24,56 @@
       <h5 class="line_space"><strong>Category:</strong> {{ book.category }}</h5>
       <p class="line_space"><strong>Desciption:</strong></p>
       <p> {{ book.desc }}</p>
-      <hr class="my-4">
-      <a href="#" class="genric-btn primary circle">Add comment</a>
-  </div>
+      <div>
+        {% if user.is_authenticated %}
+        <form method="post" enctype="multipart/form-data" class="formsWidth">
+            {% csrf_token %}
+            {{ review_form|crispy }}
+            <button type="submit" class="genric-btn primary circle" style="float: right">Review</button>
+        </form>
+        {% else %}
+            <a href="{% url 'login' %}"><button class="btn btn-primary btn-xs" style="float: right">Ratting (login)</button></a>
+        {% endif %}
+        </div>
+        <hr class="my-4">
+        {% if ratings %}
+        <h6>Ratings:</h6>
+            {% for rating in ratings %}
+            <div>
+                <div>
+                <h6 style="color: black; font-weight: lighter;"><strong>{{ rating.user.username }}</strong></h6>
+                {% for star in rating.actual_rating %}
+                    <span class="fa fa-star checked" style="color : yellow"></span>
+                {% endfor %}
+                {% for rate in rating.hidden_rating %}
+                    <span class="fa fa-star" style="color : silver"></span>
+                {% endfor %}
+                <p style="color: rgb(39, 36, 36);">{{ rating.review }}</p>
+                {% if user.is_authenticated %}
+                <form method="post" enctype="multipart/form-data" class="formsWidth">
+                    {% csrf_token %}
+                    {{ comment_form|crispy }}                     
+                    <input name="rating" type="hidden" value={{ rating.id }}/>
+                    <button type="submit" class="genric-btn success circle" style="float: right">Comment</button>
+                </form>
+                {% else %}
+                <a href="{% url 'login' %}"><button class="btn btn-primary btn-xs" style="float: right">Comment (login)</button></a>
+                {% endif %}
+                </div>
+                <div style="margin-left: 50px; margin-top: 20px;">
+                {% if rating.comment_set.all %}
+                {% for comment in rating.comment_set.all %}
+                    <p style="color: black;"> {{comment.user.username}}</p>
+                    <p > {{ comment.comment }}</p>
+                {% endfor %}
+                {% endif %}
+                </div>
+                <hr class="my-4">
+            </div>
+                {% endfor %}		
+        {% else %}
+            <h6>No comments yet</h6>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

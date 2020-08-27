@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import User
+from datetime import date, datetime
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -81,9 +82,37 @@ class Request(models.Model):
 
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    star = models.IntegerField()
+    RATE_CHOICE = (
+        (1, 'Awful'),
+        (2, 'Fair'),
+        (3, 'Good'),
+        (4, 'Great'),
+        (5, 'Excellent'),
+    )
+    star = models.IntegerField(
+        choices=RATE_CHOICE,
+        default=5,
+    )
+    # review_id = models.AutoField(primary_key=True)
     review = models.TextField()
     book = models.ForeignKey('Book', on_delete=models.CASCADE)
+
+    @property
+    def actual_rating(self):
+        list_of_stars = []
+        for star in range(self.star):
+            list_of_stars.append(star)
+        return list_of_stars
+
+    @property
+    def hidden_rating(self):
+        list_of_stars = []
+        for star in range(5 - self.star):
+            list_of_stars.append(star)
+        return list_of_stars
+
+    def get_id(self):
+        return self.get_id()
 
 
 class Comment(models.Model):
@@ -91,15 +120,18 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
 
+from django.contrib.auth import get_user_model
+UserModel = get_user_model()
 
 class Follow(models.Model):
     follower = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
     following = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
+    date_added = models.DateTimeField(default=datetime.now)
 
     class Meta:
         unique_together = ('follower', 'following')
 
-    def __str__(self):
+    def __unicode__(self):
         return u'%s follows %s' % (self.follower, self.following)
 
 
