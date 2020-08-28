@@ -102,6 +102,7 @@ class Request(models.Model):
     )
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
+    date_added = models.DateTimeField(default=datetime.now)
     def save(self):
         if self.pk is not None:
             request_after = Request.objects.get(id = self.id)
@@ -116,12 +117,6 @@ class Request(models.Model):
         return super(Request, self).save()
     def __str__(self):
         return self.title
-
-
-
-
-
-
 
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -139,7 +134,7 @@ class Rating(models.Model):
     # review_id = models.AutoField(primary_key=True)
     review = models.TextField()
     book = models.ForeignKey('Book', on_delete=models.CASCADE)
-
+    date_added = models.DateTimeField(default=datetime.now)
     def __str__(self):
         return self.user.username + ' reviewed ' + self.book.title
 
