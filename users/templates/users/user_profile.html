@@ -14,7 +14,7 @@
                     {% csrf_token %}
                     <button type="submit" id= "follow" style="background-color: #34b1eb;"
                      class="btn btn-secondary"name ="follow" > 
-                    {% if is_follower == 1 %} UNFOLLOW {% else %} FOLLOW {% endif %} </button>
+                    {% if is_followed == 1 %} UNFOLLOW {% else %} FOLLOW {% endif %} </button>
                 </form>
             </div>
             <br>
