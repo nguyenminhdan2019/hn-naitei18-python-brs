@@ -23,6 +23,10 @@ from django.views.generic import (
     TemplateView)
 from review.models import  Follow
 
+from review.models import Book, BookMark
+
+# Create your views here.
+
 from django.http import HttpResponseRedirect
 # Create your views here.
 # class SignUpView(SuccessMessageMixin, CreateView):
@@ -37,6 +41,31 @@ from django.http import HttpResponseRedirect
 class UserDetailView(LoginRequiredMixin, TemplateView):
     login_url = "login"
     template_name = 'users/user_detail.html'
+
+    def get_context_data(self, **kwargs):
+        read_marks = BookMark.objects.filter(user=self.request.user.id, mark_status='r_ed').order_by('-updated_at')
+        reading_marks = BookMark.objects.filter(user=self.request.user.id, mark_status = 'r_ing').order_by('-updated_at')
+        fa_marks = BookMark.objects.filter(user=self.request.user.id, fa_status = 'fa')
+        context = super(UserDetailView, self).get_context_data(**kwargs)
+        books = Book.objects.all()
+        read_list = []
+        reading_list = []
+        fa_list = []
+        for read_mark in read_marks:
+            data = {'read_mark': read_mark, 'read_book': books.get(id=read_mark.book_id)}
+            read_list.append(data)
+        for reading_mark in reading_marks:
+            data = {'reading_mark': reading_mark, 'reading_book': books.get(id=reading_mark.book_id)}
+            reading_list.append(data)
+        for fa_mark in fa_marks:
+            data = {'fa_mark': fa_mark, 'fa_book': books.get(id=fa_mark.book_id)}
+            fa_list.append(data)
+        context.update({
+            'read_list': read_list,
+            'reading_list': reading_list,
+            'fa_list': fa_list
+        })
+        return context
 
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, FormView):
     login_url = "login"

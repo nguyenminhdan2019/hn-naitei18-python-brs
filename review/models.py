@@ -48,6 +48,8 @@ class Book(models.Model):
 class BookMark(models.Model):
     book = models.ForeignKey('Book', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('book', 'user',)
