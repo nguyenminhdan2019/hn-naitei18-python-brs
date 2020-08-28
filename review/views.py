@@ -12,6 +12,7 @@ from django.core.mail import send_mail
 import os
 import environ
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 env = environ.Env()
 # reading .env file
 environ.Env.read_env()
@@ -129,12 +130,19 @@ def request_form(request):
                 from_email = env('EMAIL_HOST_USER'),
                 recipient_list = [env('EMAIL_ADMIN'), ],
                 )
-            return redirect('index')
+            return redirect('list-request')
         else:
-            form = BookForm()
-            # form.fields['name'].initial = request.user.username
-            form.fields['title'].widget.attrs['placeholder'] = 'Write title here'
-            form.fields['author'].widget.attrs['placeholder'] = 'Write author here'
             return render(request, 'books/request.html', {'form': form})
-    else :
-        return redirect('index')
+    form = BookForm()
+    # form.fields['name'].initial = request.user.username
+    form.fields['title'].widget.attrs['placeholder'] = 'Write title here'
+    form.fields['author'].widget.attrs['placeholder'] = 'Write author here'
+    return render(request, 'books/request.html', {'form': form})
+
+@login_required
+def list_request(request):
+    try:
+        requests = Request.objects.filter(user = request.user)
+    except requests.DoesNotExist:
+        raise Http404('Request does not exist')
+    return render(request, 'books/list_request.html', context={'requests': requests})
