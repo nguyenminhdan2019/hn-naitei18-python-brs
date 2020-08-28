@@ -11,7 +11,7 @@ from django.http import HttpResponse
 from django.db.models import Avg
 
 from django.core.mail import send_mail
-
+from django.conf import settings
 import os
 import environ
 
@@ -244,3 +244,20 @@ class MarkRead(generic.View):
                 stt = 'r_ed'
             mark.save()
             return JsonResponse({'serializedData': model_to_dict(mark), 'stt': stt}, status=200)
+
+def change_language(request):
+    url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+        language = request.POST.get('language')
+        if language:
+            if language != settings.LANGUAGE_CODE and [lang for lang in settings.LANGUAGES if lang[0] == language]:
+                redirect_path = f'/{language}/'
+            elif language == settings.LANGUAGE_CODE:
+                redirect_path = '/'
+            else:
+                return response
+            from django.utils import translation
+            translation.activate(language)
+            response = HttpResponseRedirect(redirect_path)
+            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, language)
+    return HttpResponseRedirect(url)

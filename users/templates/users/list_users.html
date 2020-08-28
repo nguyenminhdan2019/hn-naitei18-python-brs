@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+{% block banner %}{% endblock %}
+{% block content %}
+<div class="row pt-70">
+    <div class="col-md-9">
+        <p>List User Active</p>
+        <div class="col-md-3">
+                <br>
+                <ul>
+                    {% for user in user_list %}
+                        <li><a href="{% url 'UserDetail' user.id %}">{{user}}</a></li>
+                    {% endfor %}
+                </ul>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'review',
     'users.apps.UsersConfig',
     'crispy_forms',
+    'notifications',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -134,7 +136,7 @@ STATIC_URL = '/static/'
 
 LANGUAGES = (
     ('en-us', _('English')),
-    ('vn-vn', _('Vietnamese')),
+    ('vi-vi', _('Vietnamese')),
 )
 
 LOGIN_REDIRECT_URL = '/review/'

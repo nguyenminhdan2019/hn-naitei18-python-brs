@@ -1,0 +1,46 @@
+{% extends 'base_generic.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+    <div class="columns is-mobile is-centered">
+    <div class="column is-half">
+
+    {% for notification in notifications %}
+        {% if notification.notification_type == 2 %}
+            <div class="notification">
+                <a href="{% url 'delete-notification' notification.id %}" class="delete">Delete</a>
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <strong><a href="{% url 'UserDetail' notification.sender.id %}">@{{notification.sender.username }}</a></strong> 
+                            <br>
+                            <p><i class="material-icons"></i> {{notification.sender.username}} Followed you!</p>
+                            <strong><small>{{ notification.date|naturaltime }}</small></strong>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        {% endif %}
+
+        {% if notification.notification_type == 1 %}
+            <div class="notification">
+                <a href="{% url 'delete-notification' notification.id %}" class="delete">Delete</a>
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <br>
+                            <p><i class="material-icons"></i> System : {{notification.text_preview}} </p>
+                            <strong><small>{{ notification.date|naturaltime }}</small></strong>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        {% endif %}
+
+
+
+    {% endfor %}
+{% endblock %}
