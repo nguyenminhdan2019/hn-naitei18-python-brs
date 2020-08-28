@@ -10,9 +10,10 @@ class BookForm(forms.Form):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Rating
-        fields = ['star', 'review']  
+        fields = ['star']  
+
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['comment']
+        exclude = ('rate', 'user', 'comment')

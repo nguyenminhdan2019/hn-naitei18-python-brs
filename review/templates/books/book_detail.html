@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 {% block banner %}{% endblock %}
 {% block content %}
+
 <div class="row book_detail" style="width: 100%;">
     <div class="col-md-4 bookDetailLeftSide text-center">
         <img class="book_image_detail" src="{{ book.image.url }}" alt=""> <br>
@@ -10,7 +11,7 @@
                 {% for rate in book.actual_rating %}
                     <span class="fa fa-star checked" style="color : yellow"></span>
                 {% endfor %}
-                {% for rate in book.hidden_rating %}
+                {% for rate in book.hidden_ratings %}
                     <span class="fa fa-star" style="color : silver"></span>
                 {% endfor %}
             {% else %}
@@ -50,21 +51,54 @@
       <h5 class="line_space"><strong>Author:</strong> {{ book.author }}</h5>
       <h5 class="line_space"><strong>Category:</strong> {{ book.category }}</h5>
       <p class="line_space"><strong>Desciption:</strong></p>
-      <p> {{ book.desc }}</p>
-      <div>
+      <p class="line_space"> {{ book.desc }}</p>
+      <div style="margin-left: 15px; margin-bottom: 25px;">
         {% if user.is_authenticated %}
-        <form method="post" enctype="multipart/form-data" class="formsWidth">
-            {% csrf_token %}
-            {{ review_form|crispy }}
-            <button type="submit" class="genric-btn primary circle" style="float: right">Review</button>
-        </form>
+            {% if own_review %}
+            <div id="my-review">
+                <p style="color: black;">Your Review:</p>
+                {% for star in own_review.actual_rating %}
+                    <span class="fa fa-star checked" style="color : yellow"></span>
+                {% endfor %}
+                {% for rate in own_review.hidden_rating %}
+                    <span class="fa fa-star" style="color : silver"></span>
+                {% endfor %}
+                <p>Comment:</p>
+                <p>{{ own_review.review }}</p>
+                <div>
+                    <form action="{% url 'delete-review' own_review.id%}" method='POST'>
+                        {% csrf_token %}
+                        <button type="submit" class="genric-btn primary circle btn-xs" style="float: right; " name ="Delete" > Delete</button>
+                    </form>
+                    <button id="btn-edit" class="genric-btn info circle btn-xs" style="float: right; margin-right: 15px;">Edit</button>
+                </div>
+            </div>
+            <div id="edit-review" style="display: none;">
+                <form  method="post" enctype="multipart/form-data" class="formsWidth">
+                    {% csrf_token %}
+                    {{ review_form|crispy }}
+                    <textarea name="review" class="single-textarea" placeholder="Comment" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Comment'" required></textarea>
+                    <button type="submit" class="genric-btn info circle" style="float: right">Review</button>
+                </form>
+                <button id="btn-cancle" class="genric-btn primary circle btn-xs" style="float: right; margin-right: 15px;">Cancle</button>
+            </div>
+                
+            {% else %}
+            <form method="post" enctype="multipart/form-data" class="formsWidth">
+                {% csrf_token %}
+                {{ review_form|crispy }}
+                <textarea name="review" class="single-textarea" placeholder="Comment" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Comment'" required></textarea>
+                <button type="submit" class="genric-btn primary circle" style="float: right">Review</button>
+            </form>
+            {% endif %}
         {% else %}
             <a href="{% url 'login' %}"><button class="btn btn-primary btn-xs" style="float: right">Ratting (login)</button></a>
         {% endif %}
         </div>
+        <br/>
         <hr class="my-4">
         {% if ratings %}
-        <h6>Ratings:</h6>
+        <h6 style="color: black;">Reviews({{ratings.count}}):</h6>
             {% for rating in ratings %}
             <div>
                 <div>
@@ -76,17 +110,20 @@
                     <span class="fa fa-star" style="color : silver"></span>
                 {% endfor %}
                 <p style="color: rgb(39, 36, 36);">{{ rating.review }}</p>
-                {% if user.is_authenticated %}
-                <form method="post" enctype="multipart/form-data" class="formsWidth">
-                    {% csrf_token %}
-                    {{ comment_form|crispy }}                     
-                    <input name="rating" type="hidden" value={{ rating.id }}/>
-                    <button type="submit" class="genric-btn success circle" style="float: right">Comment</button>
-                </form>
-                {% else %}
-                <a href="{% url 'login' %}"><button class="btn btn-primary btn-xs" style="float: right">Comment (login)</button></a>
-                {% endif %}
                 </div>
+                <div >
+                    {% if user.is_authenticated %}
+                        <form method="post" enctype="multipart/form-data" class="formsWidth">
+                            {% csrf_token %}
+                            {{ comment_form|crispy }}
+                            <textarea name="comment" class="single-textarea" placeholder="Comment" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Comment'" required></textarea>                   
+                            <input name="rating" type="hidden" value={{ rating.id }}/>
+                            <button type="submit" class="genric-btn info circle" style="float: right">Comment</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}"><button class="btn btn-primary btn-xs" style="float: right">Comment (login)</button></a>
+                    {% endif %}
+               
                 <div style="margin-left: 50px; margin-top: 20px;">
                 {% if rating.comment_set.all %}
                 {% for comment in rating.comment_set.all %}
@@ -95,6 +132,8 @@
                 {% endfor %}
                 {% endif %}
                 </div>
+                </div>
+                <br/>
                 <hr class="my-4">
             </div>
                 {% endfor %}		
@@ -104,3 +143,4 @@
     </div>
 </div>
 {% endblock %}
+
