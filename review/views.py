@@ -35,6 +35,8 @@ from .forms import (
     BookForm
 )
 
+from review.models import Follow
+
 def index(request):
 	 return render(request, 'index.html')
 
@@ -128,9 +130,11 @@ def request_form(request):
                 recipient_list = [env('EMAIL_ADMIN'), ],
                 )
             return redirect('index')
-    if request.user.is_authenticated:
-        form = BookForm()
-        # form.fields['name'].initial = request.user.username
-        form.fields['title'].widget.attrs['placeholder'] = 'Write title here'
-        form.fields['author'].widget.attrs['placeholder'] = 'Write author here'
-        return render(request, 'books/request.html', {'form': form})
+        else:
+            form = BookForm()
+            # form.fields['name'].initial = request.user.username
+            form.fields['title'].widget.attrs['placeholder'] = 'Write title here'
+            form.fields['author'].widget.attrs['placeholder'] = 'Write author here'
+            return render(request, 'books/request.html', {'form': form})
+    else :
+        return redirect('index')

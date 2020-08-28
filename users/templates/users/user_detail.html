@@ -16,9 +16,9 @@
             <br>
             <br>
             <div>
-                <p><strong>Join date</strong> <br>{{ user.date_joined|date:"F j, Y" }}</p>
-                <p><strong>Last login date </strong><br>{{ user.last_login|date:"F j, Y" }}</p>
-                <p><strong>Email </strong><br>{{ user.email }}</p>
+                <p><strong>Follower:</strong>{{user.follower.count}}</p>
+                <p><strong>Following:</strong>{{user.Following.count}}</p>
+                <p><strong>Email </strong>{{ user.email }}</p>
             </div>
         </div>
     </div>

@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import User
+from datetime import date, datetime
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -119,15 +120,18 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
 
+from django.contrib.auth import get_user_model
+UserModel = get_user_model()
 
 class Follow(models.Model):
     follower = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
     following = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
+    date_added = models.DateTimeField(default=datetime.now)
 
     class Meta:
         unique_together = ('follower', 'following')
 
-    def __str__(self):
+    def __unicode__(self):
         return u'%s follows %s' % (self.follower, self.following)
 
 
