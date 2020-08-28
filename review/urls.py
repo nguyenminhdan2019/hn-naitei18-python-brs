@@ -17,5 +17,6 @@ urlpatterns = [
     path('search-book-results/', SearchBookListView.as_view(), name='search'),
     path('request/', request_form, name='request'),
     path('list-request/', views.list_request, name='list-request'),
+    path('books/<int:pk>/mark-favorite/', views.MarkFavorite.as_view(), name='mark-favorite'),
+    path('books/<int:pk>/mark-read/', views.MarkRead.as_view(), name='mark-read')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
