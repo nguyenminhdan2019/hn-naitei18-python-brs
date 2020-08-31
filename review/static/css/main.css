@@ -836,6 +836,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .genric-btn {
+  margin: 10px !important;
   display: inline-block;
   outline: none;
   line-height: 40px;

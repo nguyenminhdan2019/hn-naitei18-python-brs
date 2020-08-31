@@ -5,7 +5,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import FormMixin
 from django.http import HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.http import HttpResponse
+from django.db.models import Avg
 
 from django.core.mail import send_mail
 
@@ -60,7 +63,7 @@ class BooksListView(ListView):
         })
         return context
 
-class BookDetailView(DetailView):
+class BookDetailView(DetailView, LoginRequiredMixin):
     model = Book
     template_name = 'books/book_detail.html'
     paginate_by = 6
@@ -70,11 +73,9 @@ class BookDetailView(DetailView):
     def get_success_url(self):
         return reverse('book-detail', kwargs={'pk': self.object.pk})
 
-    # def book_detail_view(self, request, primary_key):
+    # def book_detail_view(request, primary_key):
     #     book = get_object_or_404(Book, pk=primary_key)
-    #     bookmark = BookMark.objects.filter(user=self.request.user.id, book=book.id)
-    #     print(bookmark)
-    #     return render(request, 'books/book_detail.html', context={'book': book, 'bookmark': bookmark})
+    #     return render(request, 'books/book_detail.html', context={'book': book})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -84,7 +85,9 @@ class BookDetailView(DetailView):
             context['bookmark'] = BookMark.objects.filter(user=self.request.user.id, book=book.id).first()
         context['review_form'] = self.review_form
         context['comment_form'] = self.comment_form
-        context['ratings'] = Rating.objects.filter(book=self.object)
+        context['ratings'] = Rating.objects.filter(book=self.object).order_by('-id')
+        if Rating.objects.filter(user=self.request.user.id).filter(book=self.object).first():
+            context['own_review'] = Rating.objects.filter(user=self.request.user.id).filter(book=self.object).first()
         return context
         
     def post(self, request, *args, **kwargs):
@@ -94,22 +97,44 @@ class BookDetailView(DetailView):
             comment_form = CommentForm(request.POST)
             if rating_form.is_valid():
                 book = self.get_object()
+                user=self.request.user
                 star = rating_form.cleaned_data['star']
-                comment = rating_form.cleaned_data['review']
-                new_rating = Rating(star=star, review=comment, book=book, user=self.request.user)
-                new_rating.save()
+                comment = request.POST.get('review')
+                try:
+                    rating = Rating.objects.get(user=user, book=book)
+                    if rating:
+                        rating.star = star
+                        rating.review = comment
+                        rating.save()
+                except :
+                    new_rating = Rating(star=star, review=comment, book=book, user=self.request.user)
+                    new_rating.save()
+                rate= Rating.objects.filter(book=book).aggregate(Avg('star'))
+                book.vote = round(list(rate.values())[0], 1)
+                book.save()
                 success_url = reverse_lazy('books')
                 success_message = "Thank!"
                 return HttpResponseRedirect(url)
             if comment_form.is_valid():
-                content = comment_form.cleaned_data['comment']
+                content = request.POST.get('comment')
                 review = request.POST.get('rating')
                 review_id = int(review[0:len(review)-1])
                 new_comment = Comment(comment=content, user=self.request.user, rate= Rating.objects.get(pk=review_id))
                 new_comment.save()
                 success_url = reverse_lazy('books')
                 success_message = "Thank!"
-                return HttpResponseRedirect(url)            
+                return HttpResponseRedirect(url)      
+
+@login_required
+def delete_review(request,pk):
+    url = request.META.get('HTTP_REFERER')
+    review = get_object_or_404(Rating, pk=pk)
+    book = review.book
+    review.delete()
+    rate= Rating.objects.filter(book=book).aggregate(Avg('star'))
+    book.vote = round(list(rate.values())[0], 1)
+    book.save()
+    return  HttpResponseRedirect(url)
 
 class SearchBookListView(ListView):
     template_name = "books/book_search_result.html"

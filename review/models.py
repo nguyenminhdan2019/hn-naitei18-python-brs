@@ -1,9 +1,8 @@
-import datetime
+from datetime import datetime
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import User
-from datetime import date, datetime
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -29,6 +28,8 @@ class Book(models.Model):
     def get_vote(self):
         if self.vote == int(self.vote):
             self.vote = int(self.vote)
+        else:
+            self.vote = int(round(self.vote))
         return self.vote
 
     @property
@@ -132,7 +133,6 @@ class Rating(models.Model):
 
     def get_id(self):
         return self.get_id()
-
 
 class Comment(models.Model):
     rate = models.ForeignKey(Rating, on_delete=models.CASCADE)
