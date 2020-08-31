@@ -3,7 +3,7 @@
 {% block banner %}{% endblock %}
 {% block content %}
 
-<div class="row book_detail" style="width: 100%;">
+<div class="row pt-70 book_detail" style="width: 100%;">
     <div class="col-md-4 bookDetailLeftSide text-center">
         <img class="book_image_detail" src="{{ book.image.url }}" alt=""> <br>
         <div class="stars mt-2 mb-3" style="font-size: 20px;">
@@ -11,7 +11,7 @@
                 {% for rate in book.actual_rating %}
                     <span class="fa fa-star checked" style="color : yellow"></span>
                 {% endfor %}
-                {% for rate in book.hidden_ratings %}
+                {% for rate in book.hidden_rating %}
                     <span class="fa fa-star" style="color : silver"></span>
                 {% endfor %}
             {% else %}

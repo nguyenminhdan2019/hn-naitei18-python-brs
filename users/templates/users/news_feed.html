@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+{% block banner %}{% endblock %}
+{% block content %}
+<div class="row pt-70">
+    <div class="col-md-3">
+        <div class="username text-center">
+            <img style="margin-bottom:15px;" src="{{ user.profile.image.url }}" alt="User Photo"/>
+            <h4>
+                <strong>{{ user.username }}</strong>
+            </h4>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <h1 class="text-center">News Feed</h1><br>
+        {% for activity in activity_list %}
+            <div class="row" style="padding: 1.5rem 0; border-bottom: 1px solid #e9e9e9">
+                <div class="d-flex align-items-start profile-feed-item col-md-12 pl-lg-5">
+                    <a {% if user == activity.user %}href="{% url 'UserProfile' %}"{% else %}href="{% url 'AddFollow' activity.user.id %}"{% endif %} style="width: 50px">
+                        <img src="{{ activity.user.profile.image.url }}" alt="profile" class="img-sm rounded-circle" style="max-width: 100%; height: auto">
+                    </a>
+                    <div class="ml-4">
+                        <h4>{{ activity.user }}</h4>
+                        <p>{{ activity.activity }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

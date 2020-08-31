@@ -2,12 +2,12 @@
 {% load i18n %}
 <div class="container">
     <div class="row align-items-center justify-content-between d-flex">
-      <div id="logo">
+        <div id="logo">
         <a href="{% url 'index' %}"><img src="{% static 'icons/regal.png' %}" alt="" title="" /></a>
-      </div>
-      <nav id="nav-menu-container">
-          <ul class="nav-menu">
-              <li><a href=""><img style="height:1.4em;" src="" alt=""> Home</a></li>
+        </div>
+        <nav id="nav-menu-container">
+            <ul class="nav-menu">
+              <li><a href="{% url 'news-feed' %}"><img style="height:1.4em;" src="" alt=""> Home</a></li>
               <li><a href="{% url 'books' %}"><img style="height:1.4em;" src="{% static 'icons/book.png' %}" alt=""> Books</a></li>
               <!-- <li><a href=""> Language</a></li> -->
               {% if user.is_authenticated %}
@@ -20,10 +20,6 @@
               <li><a href="{% url 'show-notifications' %}"><img style="height: 1.4em;" src="{% static 'icons/notification.jpg'%}" alt=""> Notification </a></li>
               <li class="menu-has-children"><a href="{% url 'UserProfile' %}"><img style="height:1.4em;" src="{% static 'icons/profile.png' %}" alt="">
                   {{ user.username }}</a>
-                  <ul>
-                      <li><a href="{% url 'UserProfile' %}">My page</a></li>
-                      <li><a href="">My Books</a></li>
-                  </ul>
               </li>
               <li><a href="{% url 'ListUsers' %}"><img style="height: 1.4em;" src="{% static 'icons/profile.png'%}" alt=""> Active Users </a></li>
               <li><a href="{% url 'logout' %}"><img style="height:1.4em;" src="{% static 'icons/logout.png' %}" alt=""> Logout</a></li>
@@ -31,18 +27,21 @@
               <li><a href="{% url 'login' %}"><img style="height:1.4em;" src="{% static 'icons/login.png' %}" alt=""> Login</a></li>
               <li><a href="{% url 'signup' %}"><img style="height:1.4em;" src="{% static 'icons/register.png' %}" alt=""> Register</a></li>
               {% endif %}
-              <li><form action="{% url 'change_language' %}" method="post">
-                {% csrf_token %}
-                <select class="dropdown_item_select home_search_input " name="language">
-                {% get_available_languages as LANGUAGES %}
-                  {% for language in LANGUAGES %}
-                  <option value="{{ language.0 }}" {% if language.0 == LANGUAGE_CODE %} selected{% endif %}>
-                    {{ language.0|language_name_local }} ({{ language.0 }})
-                  </option>
-                  {% endfor %}
-                </select>
-                <input type="submit" class="btn btn-primary" value="{% trans 'Change language' %}">
-              </form></li>
+              <li>
+                <form action="{% url 'change_language' %}" method="post">
+                  {% csrf_token %}
+                  <select name="language">
+                      {% get_current_language as LANGUAGE_CODE %}
+                      {% get_available_languages as LANGUAGES %}
+                      {% for lang in LANGUAGES %}
+                          <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                              {{ lang.1 }} ({{ lang.0 }})
+                          </option>
+                      {% endfor %}
+                  </select>
+                  <input type="submit" value="Select Language" />
+                </form>
+              </li>
           </ul>
       </nav>
     </div>

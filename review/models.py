@@ -140,6 +140,9 @@ class Rating(models.Model):
     review = models.TextField()
     book = models.ForeignKey('Book', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.user.username + ' reviewed ' + self.book.title
+
     @property
     def actual_rating(self):
         list_of_stars = []
@@ -173,8 +176,8 @@ class Follow(models.Model):
     class Meta:
         unique_together = ('follower', 'following')
 
-    def __unicode__(self):
-        return u'%s follows %s' % (self.follower, self.following)
+    def __str__(self):
+        return '%s follows %s' % (self.follower, self.following)
 
 
 class Activity(models.Model):
@@ -185,7 +188,8 @@ class Activity(models.Model):
         ('un_fo', 'Unfollow'),
         ('un_fa', 'Unfavorite'),
         ('ma_ed', 'Mark read'),
-        ('ma_ing', 'Mark reading')
+        ('ma_ing', 'Mark reading'),
+        ('rv', 'Review')
     )
     activity_type = models.CharField(
         max_length=200,
