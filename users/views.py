@@ -28,15 +28,7 @@ from review.models import Book, BookMark
 # Create your views here.
 
 from django.http import HttpResponseRedirect
-# Create your views here.
-# class SignUpView(SuccessMessageMixin, CreateView):
 
-#     form_class = UserRegisterForm
-#     success_url = reverse_lazy('login')
-#     template_name = 'registration/signup.html'
-#     success_message = _("Now you are registered, try to log in!")
-#     def form_valid():
-#         User = 
 
 class UserDetailView(LoginRequiredMixin, TemplateView):
     login_url = "login"
@@ -71,6 +63,8 @@ class UserDetailView(LoginRequiredMixin, TemplateView):
         })
         return context
 
+from django.http import HttpResponseRedirect
+from notifications.models import Notification
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, FormView):
     login_url = "login"
     form_class = UserUpdateForm
@@ -142,7 +136,9 @@ def follow(request, pk):
         except :
             follow = Follow(follower = user, following = to_user)
             follow.save()
-        return HttpResponseRedirect(url)
+            notify = Notification(sender=user, user=to_user, notification_type=2)
+            notify.save()
+        return HttpResponseRedirect(url)            
     else:
         if request.method == 'GET':
             user = request.user
@@ -151,17 +147,13 @@ def follow(request, pk):
             num_follower = Follow.objects.filter(following=to_user).count()
             try:
                 followed = Follow.objects.get(follower=user, following=to_user)
-                is_followed = 1
+                is_follower =1
             except :
-                is_followed = 0
+                is_follower=0
             context = {
-                'user': user, 'to_user': to_user,
-                'following': num_following,
-                'follower': num_follower,
-                'read_list': read_list,
-                'reading_list': reading_list,
-                'fa_list': fa_list,
-                'is_followed': is_followed
+                'user': user, 'to_user': to_user, 
+                'following': num_following, 'follower': num_follower, 
+                'is_follower': is_follower
             }
             return render(request, 'users/user_profile.html', context = context)
         else:
@@ -175,28 +167,6 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .tokens import account_activation_token
 # pip3 install six && echo import six >"$(python3 -c "import sys; print(tuple(filter(lambda x: 'site-packages' in x, sys.path))[0])")"/django/utils/__init__.py
 
-# def signup(request):
-#     if request.method == 'POST':
-#         form = UserRegisterForm(request.POST)
-#         if form.is_valid():
-#             user = form.save(commit=False)
-#             user.is_active = False
-#             user.save()
-#             current_site = get_current_site(request)
-#             mail_subject = 'Active your account.'
-#             message = render_to_string('acc_active_email.html', {
-#                 'user': user,
-#                 'domain': current_site.domain,
-#                 'uid':urlsafe_base64_encode(force_bytes(user.pk)).decode(),
-#                 'token': account_activation_token.make_token(user),
-#             })
-#             to_email = form.cleaned_data.get('email')
-#             email = EmailMessage(mail_subject, message, to =[to_email])
-#             email.send()
-#             return HttpResponse('Please confirm your email address to complete the registration')
-#         else:
-#             form = UserRegisterForm()
-#             return render(request, 'users/signup.html', {'form': form})
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
@@ -247,3 +217,20 @@ def activate(request, uidb64, token):
         return render(request, 'registration/active_success.html', context={'user': user})
     else:
         return HttpResponse('Activation link is invalid!')
+
+from django.views import generic
+
+class UserListView(LoginRequiredMixin, generic.ListView):
+    model =User
+    template_name = 'users/list_users.html'
+    def get_queryset(self):
+        now_user = self.request.user
+        # print(now_user)
+        users_not_staff = User.objects.filter(is_staff = False)
+        user_not_now_user = users_not_staff.exclude(id = now_user.id)
+        return user_not_now_user
+
+# class UserDetailView(LoginRequiredMixin, generic.DetailView):
+#     model = User
+#     template_name = 'users/user_profile.html'
+

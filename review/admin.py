@@ -12,18 +12,10 @@ from .models import (
 )
 # Register your models here.
 
-@admin.register(Book)
-class BookAdmin(admin.ModelAdmin):
-    fields = ('title', 'author', 'image')
+admin.site.register(Book)
 
-    list_display = ('title', 'author')
-    search_fields = ['title']
+admin.site.register(Category)
 
-@admin.register(Category)
-class Category(admin.ModelAdmin):
-    list_display = ('name', )
-    search_fields = ['name']
 
-@admin.register(Request)
-class RequestAdmin(admin.ModelAdmin):
-    list_display = ('user', 'title', 'author', 'status')
+admin.site.register(Request)
+

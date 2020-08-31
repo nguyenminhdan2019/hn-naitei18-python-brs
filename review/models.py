@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+from datetime import date, datetime
+from notifications.models import Notification
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
@@ -80,6 +82,8 @@ class BookMark(models.Model):
         help_text='Book has not been mark favorite'
     )
 
+    # activ : get_str ---->>>> 
+
 
 class Request(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -98,6 +102,25 @@ class Request(models.Model):
     )
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
+    def save(self):
+        if self.pk is not None:
+            request_after = Request.objects.get(id = self.id)
+            sender_user = User.objects.filter(is_staff=True)[0]
+            print(sender_user)
+            to_user = self.user
+            print(to_user)
+            if request_after.status == 'rj':
+                notify = Notification(sender = sender_user,user=to_user, notification_type=1, text_preview='Reject  your request book with title {}'.format(self.title))
+                notify.save()
+            elif request_after.status == 'a':
+                notify = Notification(sender = sender_user, user = to_user, notification_type=1, text_preview='Approved your request book with title {}'.format(self.title))
+                notify.save()
+        return super(Request, self).save()
+
+
+
+
+
 
 
 class Rating(models.Model):
