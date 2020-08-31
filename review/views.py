@@ -41,6 +41,7 @@ from .models import (
     Rating,
     Comment,
     BookMark,
+    Activity
 )
 from .forms import (
     ReviewForm,
@@ -56,6 +57,7 @@ def index(request):
 class BooksListView(ListView):
     template_name = 'books/books.html'
     model = Book
+    paginate_by = 6
     def get_context_data(self, **kwargs):
         context = super(BooksListView, self).get_context_data(**kwargs)
         context.update({
@@ -112,6 +114,8 @@ class BookDetailView(DetailView, LoginRequiredMixin):
                 rate= Rating.objects.filter(book=book).aggregate(Avg('star'))
                 book.vote = round(list(rate.values())[0], 1)
                 book.save()
+                activity = Activity(user=self.request.user, activity_type='rv', activity=new_rating)
+                activity.save()
                 success_url = reverse_lazy('books')
                 success_message = "Thank!"
                 return HttpResponseRedirect(url)
@@ -200,6 +204,9 @@ class MarkFavorite(generic.View):
             mark.fa_status = self.request.POST['fa_status']
             if mark.fa_status == 'fa':
                 stt = 'fa'
+                text = mark.user.username + ' liked ' + mark.book.title
+                activity = Activity(user=self.request.user, activity_type='fa', activity=text)
+                activity.save()
             else:
                 stt = 'un_fa'
             mark.save()
@@ -211,6 +218,9 @@ class MarkFavorite(generic.View):
             mark.fa_status = self.request.POST['fa_status']
             if mark.fa_status == 'fa':
                 stt = 'fa'
+                text = mark.user.username + ' liked '+ mark.book.title
+                activity = Activity(user=self.request.user, activity_type='fa', activity=text)
+                activity.save()
             else:
                 stt = 'un_fa'
             mark.save()
@@ -227,8 +237,14 @@ class MarkRead(generic.View):
                 stt = 'nr'
             elif mark.mark_status == 'r_ing' :
                 stt = 'r_ing'
+                text = mark.user.username + ' is currently reading ' + mark.book.title
+                activity = Activity(user=self.request.user, activity_type='ma_ing', activity=text)
+                activity.save()
             else:
                 stt = 'r_ed'
+                text = mark.user.username + ' had read ' + mark.book.title
+                activity = Activity(user=self.request.user, activity_type='ma_ed', activity=text)
+                activity.save()
             mark.save()
             return JsonResponse({'serializedData': model_to_dict(mark), 'stt': stt}, status=200)
         except:
@@ -240,13 +256,19 @@ class MarkRead(generic.View):
                 stt = 'nr'
             elif mark.mark_status == 'r_ing' :
                 stt = 'r_ing'
+                text = mark.user.username + ' is currently reading ' + mark.book.title
+                activity = Activity(user=self.request.user, activity_type='ma_ing', activity=text)
+                activity.save()
             else:
                 stt = 'r_ed'
+                text = mark.user.username + ' had read ' + mark.book.title
+                activity = Activity(user=self.request.user, activity_type='ma_ed', activity=text)
+                activity.save()
             mark.save()
             return JsonResponse({'serializedData': model_to_dict(mark), 'stt': stt}, status=200)
 
 def change_language(request):
-    url = request.META.get('HTTP_REFERER')
+    response = HttpResponseRedirect('/')
     if request.method == 'POST':
         language = request.POST.get('language')
         if language:
@@ -260,4 +282,4 @@ def change_language(request):
             translation.activate(language)
             response = HttpResponseRedirect(redirect_path)
             response.set_cookie(settings.LANGUAGE_COOKIE_NAME, language)
-    return HttpResponseRedirect(url)
+    return response

@@ -39,6 +39,7 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
 
     path('list_users/', views.UserListView.as_view(), name='ListUsers'),
-    path('profile/<int:pk>/', views.UserDetailView.as_view(), name='UserDetail'),
+    path('profile/<int:pk>/', views.follow, name='UserDetail'),
 
+    path('news_feed/', views.ActivityListView.as_view(), name='news-feed')
 ]

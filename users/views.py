@@ -20,10 +20,12 @@ from .forms import (
 from django.views.generic import (
     CreateView,
     FormView,
-    TemplateView)
+    TemplateView,
+    ListView
+)
 from review.models import  Follow
 
-from review.models import Book, BookMark
+from review.models import Book, BookMark, Activity
 
 # Create your views here.
 
@@ -137,8 +139,10 @@ def follow(request, pk):
             follow = Follow(follower = user, following = to_user)
             follow.save()
             notify = Notification(sender=user, user=to_user, notification_type=2)
-            notify.save()
-        return HttpResponseRedirect(url)            
+            notify.save()            
+            activity = Activity(user=user, activity_type='fo', activity=follow)
+            activity.save()
+        return HttpResponseRedirect(url)
     else:
         if request.method == 'GET':
             user = request.user
@@ -151,9 +155,13 @@ def follow(request, pk):
             except :
                 is_follower=0
             context = {
-                'user': user, 'to_user': to_user, 
-                'following': num_following, 'follower': num_follower, 
-                'is_follower': is_follower
+                'user': user, 'to_user': to_user,
+                'following': num_following,
+                'follower': num_follower,
+                'read_list': read_list,
+                'reading_list': reading_list,
+                'fa_list': fa_list,
+                'is_followed': is_follower
             }
             return render(request, 'users/user_profile.html', context = context)
         else:
@@ -234,3 +242,18 @@ class UserListView(LoginRequiredMixin, generic.ListView):
 #     model = User
 #     template_name = 'users/user_profile.html'
 
+class ActivityListView(ListView):
+    template_name = 'users/news_feed.html'
+    model = Activity
+
+    def get_context_data(self, **kwargs):
+        context = super(ActivityListView, self).get_context_data(**kwargs)
+        followings = Follow.objects.filter(follower=self.request.user)
+        user_list = [self.request.user]
+        for following in followings:
+            user_list.append(following.following)
+        activity_list = Activity.objects.filter(user__in=user_list).order_by('-id')
+        context.update({
+            'activity_list': activity_list
+        })
+        return context
