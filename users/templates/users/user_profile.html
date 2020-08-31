@@ -4,14 +4,15 @@
 <div class="row pt-70">
     <div class="col-md-3">
         <div class="username text-center">
-            <img style="margin-bottom:15px;" src="{{ user.profile.image.url }}" alt="User Photo"/>
+            <img style="margin-bottom:15px;" src="{{ to_user.profile.image.url }}" alt="User Photo"/>
             <h4>
                 <strong>{{ to_user.username }}</strong>
             </h4>
             <br>
-            <div class="col-md-3 user-pad text-center">
+            <div class="user-pad text-center">
                 <form action="{% url 'AddFollow' to_user.id%}" method='POST'>
-                    <button type="submit" id= "follow" style="background-color: #34b1eb;" class="btn btn-secondary"name ="follow" > {% if is_followed %} UNFOLLOW {% else %} FOLLOW {% endif %} </button>
+                    {% csrf_token %}
+                    <button type="submit" id= "follow" class="btn btn-outline-success" name ="follow" > {% if is_followed %} UNFOLLOW {% else %} FOLLOW {% endif %} </button>
                 </form>
             </div>
             <br>
@@ -24,7 +25,126 @@
         </div>
     </div>
     <div class="col-md-9">
-        <p>Your News Feed</p>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-read-tab" data-toggle="tab" href="#nav-read" role="tab" aria-controls="nav-read" aria-selected="true">Read</a>
+                <a class="nav-item nav-link" id="nav-reading-tab" data-toggle="tab" href="#nav-reading" role="tab" aria-controls="nav-reading" aria-selected="false">Reading</a>
+                <a class="nav-item nav-link" id="nav-favorite-tab" data-toggle="tab" href="#nav-favorite" role="tab" aria-controls="nav-favorite" aria-selected="false">Favorite</a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-read" role="tabpanel" aria-labelledby="nav-read-tab">
+                {% for read in read_list %}
+                    <div class="row" style="padding: 1.5rem 0; border-bottom: 1px solid #e9e9e9">
+                        <div class="d-flex align-items-start profile-feed-item col-md-12 pl-lg-5">
+                            <img src="{{ to_user.profile.image.url }}" alt="profile" class="img-sm rounded-circle" style="max-width: 6%; height: auto">
+                            <div class="ml-4">
+                                <h4>{{ to_user.username }}</h4>
+                                <p> had read at {{ read.read_mark.updated_at }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 bookDetailLeftSide text-center">
+                            <a href="{{ read.read_book.get_absolute_url }}">
+                                <img class="book_image_detail" src="{{ read.read_book.image.url }}" alt="">
+                            </a>
+                            <div class="stars mt-2 mb-3" style="font-size: 20px;">
+                                {% if read.read_book.actual_rating %}
+                                    {% for rate in read.read_book.actual_rating %}
+                                        <span class="fa fa-star checked" style="color : yellow"></span>
+                                    {% endfor %}
+                                    {% for rate in read.read_book.hidden_rating %}
+                                        <span class="fa fa-star" style="color : silver"></span>
+                                    {% endfor %}
+                                {% else %}
+                                <h6>Nobody rated</h6>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h3 class="book_title"><strong>{{ read.read_book.title }}</strong> </h3>
+                            <h5 class="line_space"><strong>Author:</strong> {{ read.read_book.author }}</h5>
+                            <h5 class="line_space"><strong>Category:</strong> {{ read.read_book.category }}</h5>
+                            <p class="line_space"><strong>Desciption:</strong></p>
+                            <p> {{ read.read_book.desc }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="tab-pane fade" id="nav-reading" role="tabpanel" aria-labelledby="nav-reading-tab">
+                {% for reading in reading_list %}
+                    <div class="row" style="padding: 1.5rem 0; border-bottom: 1px solid #e9e9e9">
+                        <div class="d-flex align-items-start profile-feed-item col-md-12 pl-lg-5">
+                            <img src="{{ to_user.profile.image.url }}" alt="profile" class="img-sm rounded-circle" style="max-width: 6%; height: auto">
+                            <div class="ml-4">
+                                <h4>{{ to_user.username }}</h4>
+                                <p> is currently reading at {{ reading.reading_mark.updated_at }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 bookDetailLeftSide text-center">
+                            <a href="{{ reading.reading_book.get_absolute_url }}">
+                                <img class="book_image_detail" src="{{ reading.reading_book.image.url }}" alt="">
+                            </a>
+                            <div class="stars mt-2 mb-3" style="font-size: 20px;">
+                                {% if reading.reading_book.actual_rating %}
+                                    {% for rate in reading.reading_book.actual_rating %}
+                                        <span class="fa fa-star checked" style="color : yellow"></span>
+                                    {% endfor %}
+                                    {% for rate in reading.reading_book.hidden_rating %}
+                                        <span class="fa fa-star" style="color : silver"></span>
+                                    {% endfor %}
+                                {% else %}
+                                <h6>Nobody rated</h6>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h3 class="book_title"><strong>{{ reading.reading_book.title }}</strong> </h3>
+                            <h5 class="line_space"><strong>Author:</strong> {{ reading.reading_book.author }}</h5>
+                            <h5 class="line_space"><strong>Category:</strong> {{ reading.reading_book.category }}</h5>
+                            <p class="line_space"><strong>Desciption:</strong></p>
+                            <p> {{ reading.reading_book.desc }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="tab-pane fade" id="nav-favorite" role="tabpanel" aria-labelledby="nav-favorite-tab">
+                {% for fa in fa_list %}
+                    <div class="row" style="padding: 1.5rem 0; border-bottom: 1px solid #e9e9e9">
+                        <div class="d-flex align-items-start profile-feed-item col-md-12 pl-lg-5">
+                            <img src="{{ to_user.profile.image.url }}" alt="profile" class="img-sm rounded-circle" style="max-width: 6%; height: auto">
+                            <div class="ml-4">
+                                <h4>{{ to_user.username }}</h4>
+                                <p> liked this book.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 bookDetailLeftSide text-center">
+                            <a href="{{ fa.fa_book.get_absolute_url }}">
+                                <img class="book_image_detail" src="{{ fa.fa_book.image.url }}" alt="">
+                            </a>
+                            <div class="stars mt-2 mb-3" style="font-size: 20px;">
+                                {% if fa.fa_book.actual_rating %}
+                                    {% for rate in fa.fa_book.actual_rating %}
+                                        <span class="fa fa-star checked" style="color : yellow"></span>
+                                    {% endfor %}
+                                    {% for rate in fa.fa_book.hidden_rating %}
+                                        <span class="fa fa-star" style="color : silver"></span>
+                                    {% endfor %}
+                                {% else %}
+                                <h6>Nobody rated</h6>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h3 class="book_title"><strong>{{ fa.fa_book.title }}</strong> </h3>
+                            <h5 class="line_space"><strong>Author:</strong> {{ fa.fa_book.author }}</h5>
+                            <h5 class="line_space"><strong>Category:</strong> {{ fa.fa_book.category }}</h5>
+                            <p class="line_space"><strong>Desciption:</strong></p>
+                            <p> {{ fa.fa_book.desc }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock content %}

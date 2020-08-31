@@ -43,6 +43,8 @@ class UserDetailView(LoginRequiredMixin, TemplateView):
     template_name = 'users/user_detail.html'
 
     def get_context_data(self, **kwargs):
+        num_following = Follow.objects.filter(follower=self.request.user).count()
+        num_follower = Follow.objects.filter(following=self.request.user).count()
         read_marks = BookMark.objects.filter(user=self.request.user.id, mark_status='r_ed').order_by('-updated_at')
         reading_marks = BookMark.objects.filter(user=self.request.user.id, mark_status = 'r_ing').order_by('-updated_at')
         fa_marks = BookMark.objects.filter(user=self.request.user.id, fa_status = 'fa')
@@ -61,6 +63,8 @@ class UserDetailView(LoginRequiredMixin, TemplateView):
             data = {'fa_mark': fa_mark, 'fa_book': books.get(id=fa_mark.book_id)}
             fa_list.append(data)
         context.update({
+            'following': num_following,
+            'follower': num_follower,
             'read_list': read_list,
             'reading_list': reading_list,
             'fa_list': fa_list
@@ -112,30 +116,56 @@ class ProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, FormView):
 
 @login_required
 def follow(request, pk):
-    if request.method == 'GET':
-        user = request.user
-        to_user = get_object_or_404(User, pk=pk)
-        is_followed = 1
+    user = request.user
+    to_user = get_object_or_404(User, pk=pk)
+    url = request.META.get('HTTP_REFERER')
+    read_marks = BookMark.objects.filter(user=to_user, mark_status='r_ed').order_by('-updated_at')
+    reading_marks = BookMark.objects.filter(user=to_user, mark_status='r_ing').order_by('-updated_at')
+    fa_marks = BookMark.objects.filter(user=to_user, fa_status='fa')
+    books = Book.objects.all()
+    read_list = []
+    reading_list = []
+    fa_list = []
+    for read_mark in read_marks:
+        data = {'read_mark': read_mark, 'read_book': books.get(id=read_mark.book_id)}
+        read_list.append(data)
+    for reading_mark in reading_marks:
+        data = {'reading_mark': reading_mark, 'reading_book': books.get(id=reading_mark.book_id)}
+        reading_list.append(data)
+    for fa_mark in fa_marks:
+        data = {'fa_mark': fa_mark, 'fa_book': books.get(id=fa_mark.book_id)}
+        fa_list.append(data)
+    if request.method == 'POST' and user != to_user:
         try:
             followed = Follow.objects.get(follower=user, following=to_user)
-            if followed:
-                followed.delete()
-                is_followed=0
+            followed.delete()
         except :
             follow = Follow(follower = user, following = to_user)
             follow.save()
-            is_followed =1
-        num_following = Follow.objects.filter(follower=to_user).count()
-        num_follower = Follow.objects.filter(following=to_user).count()
-        context = {
-            'following': num_following, 
-            'follower': num_follower,
-            'is_followed': is_followed,
-            }
-        return render(request, 'users/user_profile.html', context=context)
+        return HttpResponseRedirect(url)
     else:
-        url = request.META.get('HTTP_REFERER')
-        return  HttpResponseRedirect(url)
+        if request.method == 'GET':
+            user = request.user
+            to_user = get_object_or_404(User, pk=pk)
+            num_following = Follow.objects.filter(follower=to_user).count()
+            num_follower = Follow.objects.filter(following=to_user).count()
+            try:
+                followed = Follow.objects.get(follower=user, following=to_user)
+                is_followed = 1
+            except :
+                is_followed = 0
+            context = {
+                'user': user, 'to_user': to_user,
+                'following': num_following,
+                'follower': num_follower,
+                'read_list': read_list,
+                'reading_list': reading_list,
+                'fa_list': fa_list,
+                'is_followed': is_followed
+            }
+            return render(request, 'users/user_profile.html', context = context)
+        else:
+            return redirect('UserProfile')
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
