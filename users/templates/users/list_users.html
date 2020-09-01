@@ -1,17 +1,21 @@
 {% extends "base_generic.html" %}
 {% block banner %}{% endblock %}
 {% block content %}
-<div class="row pt-70">
-    <div class="col-md-9">
-        <p>List User Active</p>
-        <div class="col-md-3">
-                <br>
-                <ul>
-                    {% for user in user_list %}
-                        <li><a href="{% url 'UserDetail' user.id %}">{{user}}</a></li>
-                    {% endfor %}
-                </ul>
-        </div>
+<div class="row pt-70 container" style="margin: 0 auto;">
+    <div class="col-md-12" >
+        <h1 class="text-center">List User Active</h1><br>
+        {% for user in user_list %}
+            <div class="row text-center" style="margin-left: 30px; padding: 1.5rem 0; border-bottom: 1px solid #e9e9e9">
+                <div class="d-flex align-items-start profile-feed-item col-md-12 pl-lg-5">
+                    <a href="{% url 'UserDetail' user.id %}" style="width: 50px">
+                        <img src="{{ user.profile.image.url }}" alt="profile" class="img-sm rounded-circle" style="max-width: 100%; height: auto">
+                    </a>
+                    <div class="ml-4">
+                        <h4>{{ user }}</h4>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock content %}

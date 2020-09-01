@@ -1,46 +1,55 @@
 {% extends 'base_generic.html' %}
-
+{% block banner %}{% endblock %}
 {% load static %}
 {% load humanize %}
 
 {% block content %}
 
-    <div class="columns is-mobile is-centered">
-    <div class="column is-half">
-
+    <div class="columns is-mobile is-centered pt-70 container" style="margin: 0 auto;">
+    <div class="column is-half" style="width: 60%; margin: 0 auto;">
+        <h1 class="text-center">Notification</h1><br>
     {% for notification in notifications %}
         {% if notification.notification_type == 2 %}
-            <div class="notification">
-                <a href="{% url 'delete-notification' notification.id %}" class="delete">Delete</a>
-                <article class="media">
-                    <div class="media-content">
-                        <div class="content">
-                            <strong><a href="{% url 'UserDetail' notification.sender.id %}">@{{notification.sender.username }}</a></strong> 
-                            <br>
-                            <p><i class="material-icons"></i> {{notification.sender.username}} Followed you!</p>
-                            <strong><small>{{ notification.date|naturaltime }}</small></strong>
+            <div class="notification" style="display: flex;">
+                <div class="col-md-9">
+                    <article class="media">
+                        <div class="media-content">
+                            <div class="content" style="text-justify:center;">
+                                <strong><a href="{% url 'UserDetail' notification.sender.id %}">@{{notification.sender.username }}</a></strong> 
+                                <br>
+                                <p><i class="material-icons"></i> {{notification.sender.username}} Followed you!</p>
+                                <strong><small>{{ notification.date|naturaltime }}</small></strong>
+                            </div>
                         </div>
-                    </div>
-                </article>
+                    </article>
+                </div>
+                <div>
+                    <a href="{% url 'delete-notification' notification.id %}" class="delete" style="text-align: center;">Delete</a>
+                </div>
             </div>
         {% endif %}
 
         {% if notification.notification_type == 1 %}
-            <div class="notification">
-                <a href="{% url 'delete-notification' notification.id %}" class="delete">Delete</a>
-                <article class="media">
-                    <div class="media-content">
-                        <div class="content">
-                            <br>
-                            <p><i class="material-icons"></i> System : {{notification.text_preview}} </p>
-                            <strong><small>{{ notification.date|naturaltime }}</small></strong>
+            <div class="notification" style="display: flex;">
+                <div class="col-md-9">
+                    <article class="media">
+                        <div class="media-content">
+                            <div class="content">
+                                <strong><a href="#">@System</a></strong> 
+                                <br>
+                                <p><i class="material-icons"></i> System : {{notification.text_preview}} </p>
+                                <strong><small>{{ notification.date|naturaltime }}</small></strong>
+                            </div>
                         </div>
+                    </article>
+                </div>
+                    <div>
+                        <a href="{% url 'delete-notification' notification.id %}" class="delete">Delete</a>
                     </div>
-                </article>
-            </div>
+                </div>
         {% endif %}
 
-
+        <hr/>
 
     {% endfor %}
 {% endblock %}

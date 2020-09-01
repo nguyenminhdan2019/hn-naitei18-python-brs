@@ -9,12 +9,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.http import HttpResponse
 from django.db.models import Avg
-
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
 import os
 import environ
-
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 env = environ.Env()
 # reading .env file
@@ -41,7 +41,8 @@ from .models import (
     Rating,
     Comment,
     BookMark,
-    Activity
+    Activity,
+    Category
 )
 from .forms import (
     ReviewForm,
@@ -51,8 +52,35 @@ from .forms import (
 
 from review.models import Follow
 
+def change_language(request):
+    response = HttpResponseRedirect('/')
+    if request.method == 'POST':
+        language = request.POST.get('language')
+        if language:
+            if language != settings.LANGUAGE_CODE and [lang for lang in settings.LANGUAGES if lang[0] == language]:
+                redirect_path = f'/{language}/'
+            elif language == settings.LANGUAGE_CODE:
+                redirect_path = '/'
+            else:
+                return response
+            from django.utils import translation
+            translation.activate(language)
+            response = HttpResponseRedirect(redirect_path)
+            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, language)
+    return response
+
 def index(request):
-	 return render(request, 'index.html')
+    num_user = User.objects.all().count()
+    num_book = Book.objects.all().count()
+    num_category = Category.objects.all().count()
+    num_review = Rating.objects.all().count()
+    context = {
+        'num_user': num_user,
+        'num_book': num_book,
+        'num_category': num_category,
+        'num_review': num_review,
+    }
+    return render(request, 'index.html', context=context)
 
 class BooksListView(ListView):
     template_name = 'books/books.html'
@@ -108,14 +136,16 @@ class BookDetailView(DetailView, LoginRequiredMixin):
                         rating.star = star
                         rating.review = comment
                         rating.save()
+                        activity = Activity(user=self.request.user, activity_type='rv', activity=rating)
+                        activity.save()
                 except :
                     new_rating = Rating(star=star, review=comment, book=book, user=self.request.user)
                     new_rating.save()
+                    activity = Activity(user=self.request.user, activity_type='rv', activity=new_rating)
+                    activity.save()
                 rate= Rating.objects.filter(book=book).aggregate(Avg('star'))
                 book.vote = round(list(rate.values())[0], 1)
                 book.save()
-                activity = Activity(user=self.request.user, activity_type='rv', activity=new_rating)
-                activity.save()
                 success_url = reverse_lazy('books')
                 success_message = "Thank!"
                 return HttpResponseRedirect(url)

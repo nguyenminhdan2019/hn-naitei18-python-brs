@@ -5,7 +5,109 @@
 {% block banner %}
 {% endblock %}
 {% block content %}
-<div class="row pt-70">
-    <p>Welcome to Book Review Website! This is block content.</p>
-</div>
+<section class="banner-area" id="home" style="height: 750px !important;">	
+    <div class="container">
+        <div class="row fullscreen d-flex align-items-center justify-content-start" style="height: 7500px !important;padding-bottom: 80px;">
+            <div class="banner-content col-lg-7">
+                <h1 class="text-uppercase">
+                    Book Reviewing			
+                </h1>
+                <p class="text-white pt-20 pb-20">
+                    Let's share your experiences and feelings about books, and together create a positive and meaningful of book reviewing community.
+                </p>
+                <a href="{% url 'books' %}" class="primary-btn text-uppercase">Let Start</a>
+            </div>
+            <div class="col-lg-5 banner-right" style="padding-bottom: 80px;">
+                <img class="img-fluid" src="{%static 'img/header-img.png' %}" alt="">
+            </div>												
+        </div>
+    </div>
+</section>
+<section class="counter-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="single-counter">
+                    <h1 class="counter">{{num_book}}</h1>
+                    <p>Total Books</p>								
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="single-counter">
+                    <h1 class="counter">{{num_user}}</h1>
+                    <p>Total Users</p>								
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="single-counter">
+                    <h1 class="counter">{{num_category}}</h1>
+                    <p>Total Categories</p>								
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="single-counter">
+                    <h1 class="counter">{{num_review}}</h1>
+                    <p>Total Reviews</p>								
+                </div>
+            </div>												
+        </div>
+    </div>	
+</section>
+<section class="testomial-area section-gap" style="margin-top: 70px;">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="menu-content pb-60 col-lg-8">
+                <div class="title text-center">
+                    <h1 class="mb-10">About us</h1>
+                    <p>We love and cherish books.</p>
+                </div>
+            </div>
+        </div>						
+        <div class="row">
+            <div class="active-tstimonial-carusel">
+                <div class="single-testimonial item">
+                    <img class="mx-auto" src="{%static 'img/t1.jpeg' %}" alt="" style="width: 150px; height: 150px;">
+                    <p class="desc">
+                        Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker, projector, hardware and more. laptop accessory
+                    </p>
+                    <h4>Nguyen Minh Dan</h4>
+                    <p>
+                        CEO at Google
+                    </p>
+                </div>
+                <div class="single-testimonial item">
+                    <img class="mx-auto" src="{%static 'img/t2.jpeg' %}" alt="" style="width: 150px; height: 150px;">
+                    <p class="desc">
+                        Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker, projector, hardware and more. laptop accessory
+                    </p>
+                    <h4>Phan Quoc Toan</h4>
+                    <p>
+                        CEO at Google
+                    </p>
+                </div>
+                <div class="single-testimonial item">
+                    <img class="mx-auto" src="{%static 'img/t3.jpeg' %}" alt="" style="width: 150px; height: 150px;">
+                    <p class="desc">
+                        Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker, projector, hardware and more. laptop accessory
+                    </p>
+                    <h4>Vu Ngoc Chi</h4>
+                    <p>
+                        CEO at Google
+                    </p>
+                </div>
+                <div class="single-testimonial item">
+                    <img class="mx-auto" src="{%static 'img/t1.jpeg' %}" alt="" style="width: 150px; height: 150px;">
+                    <p class="desc">
+                        Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker, projector, hardware and more. laptop accessory
+                    </p>
+                    <h4>Phan Quoc Toan</h4>
+                    <p>
+                        CEO at Google
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>	
+</section>
+
 {% endblock %}

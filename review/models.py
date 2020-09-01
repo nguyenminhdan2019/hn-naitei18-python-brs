@@ -106,9 +106,7 @@ class Request(models.Model):
         if self.pk is not None:
             request_after = Request.objects.get(id = self.id)
             sender_user = User.objects.filter(is_staff=True)[0]
-            print(sender_user)
             to_user = self.user
-            print(to_user)
             if request_after.status == 'rj':
                 notify = Notification(sender = sender_user,user=to_user, notification_type=1, text_preview='Reject  your request book with title {}'.format(self.title))
                 notify.save()
@@ -116,6 +114,8 @@ class Request(models.Model):
                 notify = Notification(sender = sender_user, user = to_user, notification_type=1, text_preview='Approved your request book with title {}'.format(self.title))
                 notify.save()
         return super(Request, self).save()
+    def __str__(self):
+        return self.title
 
 
 

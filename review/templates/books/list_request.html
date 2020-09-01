@@ -1,26 +1,56 @@
 {% extends "base_generic.html" %}
 {% block banner %}{% endblock %}
 {% block content %}
-<div class="row pt-70">
+<style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    th {
+        background-color: #eb6734;
+        color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #eee;
+    }
+    </style>
+<div class="row pt-70 container" style="margin: 0 auto;">
     <div class="col-md-3">
         <div class="username text-center">
             <img style="margin-bottom:15px;" src="{{ user.profile.image.url }}" alt="User Photo"/>
             <h4>
-                <strong>List Request By : {{ request.user.username }}</strong>
+                <strong>{{ request.user.username }}</strong>
             </h4>
-            {% if requests %}
-                {% for request_book in requests %}
-                    <ul style="line-height: 180%">
-                        <li>Tittle Book : {{request_book.title}}</li>
-                        <li>Author : {{request_book.author}}</li>
-                        <li>Status : {{request_book.status}}</li>
-                        <!-- chua lay duoc cai reviewing ma chi la rv hiu hiu -->
-                    </ul>
-                {% endfor %}
-            {% else %}
-                <p>there are not request by {{request.user}}</p>     
-            {% endif %}               
         </div>
+    </div>
+    <div class="col-md-9" style="padding-left: 25px;">
+        <h1 class="text-center">Request</h1><br>
+        {% if requests %}
+            <table>
+            <tr>
+                <th style="width:40%" >Title</th>
+                <th>Author</th>
+                <th>Status</th>
+            </tr>
+            {% for request_book in requests %}
+                <tr>
+                  <td>{{request_book.title}}</td>
+                  <td>{{request_book.author}}</td>
+                  <td>{{request_book.status}}</td>              
+            {% endfor %}
+        </table>
+        {% else %}
+            <p>There are not request</p>     
+        {% endif %}
     </div>
 </div>
 {% endblock content %}
