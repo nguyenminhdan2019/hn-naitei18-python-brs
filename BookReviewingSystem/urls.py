@@ -34,6 +34,7 @@ urlpatterns += i18n_patterns(
     path('review/',include('review.urls')),
     path('users/', include('users.urls')),
     path('notifications/', include('notifications.urls')),
+    path('auth/', include('social_django.urls', namespace='social')),
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
