@@ -127,6 +127,7 @@ class BookDetailView(DetailView, LoginRequiredMixin):
             comment_form = CommentForm(request.POST)
             if rating_form.is_valid():
                 book = self.get_object()
+                print('in xem book la ten hay la id',book.id)
                 user=self.request.user
                 star = rating_form.cleaned_data['star']
                 comment = request.POST.get('review')
@@ -148,7 +149,9 @@ class BookDetailView(DetailView, LoginRequiredMixin):
                 book.save()
                 success_url = reverse_lazy('books')
                 success_message = "Thank!"
-                return HttpResponseRedirect(url)
+                # return HttpResponseRedirect(url)
+                return JsonResponse({'status': 1, 'messages':'success',})
+                
             if comment_form.is_valid():
                 content = request.POST.get('comment')
                 review = request.POST.get('rating')

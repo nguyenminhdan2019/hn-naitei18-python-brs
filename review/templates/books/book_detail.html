@@ -8,138 +8,229 @@
         <img class="book_image_detail" src="{{ book.image.url }}" alt=""> <br>
         <div class="stars mt-2 mb-3" style="font-size: 20px;">
             {% if book.actual_rating %}
-                {% for rate in book.actual_rating %}
-                    <span class="fa fa-star checked" style="color : yellow"></span>
-                {% endfor %}
-                {% for rate in book.hidden_rating %}
-                    <span class="fa fa-star" style="color : silver"></span>
-                {% endfor %}
+            {% for rate in book.actual_rating %}
+            <span class="fa fa-star checked" style="color : yellow"></span>
+            {% endfor %}
+            {% for rate in book.hidden_rating %}
+            <span class="fa fa-star" style="color : silver"></span>
+            {% endfor %}
             {% else %}
             <h6>Nobody rated</h6>
             {% endif %}
         </div>
         <div class="row">
-        {% if user.is_authenticated %}
+            {% if user.is_authenticated %}
             <div class="col-md-2"></div>
             <div class="col-md-4">
-                <form class="" method="post" data-url="{% url 'mark-favorite' book.id %}" id="markFavoriteForm" book_id="{{ book.id }}">
+                <form class="" method="post" data-url="{% url 'mark-favorite' book.id %}" id="markFavoriteForm"
+                    book_id="{{ book.id }}">
                     {% csrf_token %}
                     <input type="hidden" name="user" value="{{ user }}">
                     <input type="hidden" name="book" value="{{ book.id }}">
-                    <input type="hidden" name="fa_status" id="fa_status" value="{% if bookmark.fa_status == 'fa' %}un_fa{% else %}fa{% endif %}">
-                    <input type="button" class="btn btn-outline-success" id="markFavoriteButton" value="{% if bookmark.fa_status == 'fa' %}Unfavorite{% else %}Favorite{% endif %}">
+                    <input type="hidden" name="fa_status" id="fa_status"
+                        value="{% if bookmark.fa_status == 'fa' %}un_fa{% else %}fa{% endif %}">
+                    <input type="button" class="btn btn-outline-success" id="markFavoriteButton"
+                        value="{% if bookmark.fa_status == 'fa' %}Unfavorite{% else %}Favorite{% endif %}">
                 </form>
             </div>
             <div class="col-md-4">
-                <form class="" method="post" data-url="{% url 'mark-read' book.id %}" id="markReadForm" book_id="{{ book.id }}">
+                <form class="" method="post" data-url="{% url 'mark-read' book.id %}" id="markReadForm"
+                    book_id="{{ book.id }}">
                     {% csrf_token %}
                     <input type="hidden" name="user" value="{{ user }}">
                     <input type="hidden" name="book" value="{{ book.id }}">
                     <select class="ui dropdown btn btn-outline-success" name="mark_status" id="markReadButton">
-                        <option value="nr" {% if not bookmark.mark_status or bookmark.mark_status == 'nr' %}selected{% endif %}>Not Read</option>
-                        <option value="r_ing" {% if bookmark.mark_status == 'r_ing' %}selected{% endif %}>Reading</option>
+                        <option value="nr"
+                            {% if not bookmark.mark_status or bookmark.mark_status == 'nr' %}selected{% endif %}>Not
+                            Read</option>
+                        <option value="r_ing" {% if bookmark.mark_status == 'r_ing' %}selected{% endif %}>Reading
+                        </option>
                         <option value="r_ed" {% if bookmark.mark_status == 'r_ed' %}selected{% endif %}>Readed</option>
                     </select>
                 </form>
             </div>
-        {% endif %}
-        </div>
-    </form>
-  </div>
-  <div class="col-md-8">
-      <h3 class="book_title"><strong>{{ book.title }}</strong> </h3><br>
-      <h5 class="line_space"><strong>Author:</strong> {{ book.author }}</h5>
-      <h5 class="line_space"><strong>Category:</strong> {{ book.category }}</h5>
-      <p class="line_space"><strong>Desciption:</strong></p>
-      <p class="line_space"> {{ book.desc }}</p>
-      <div style="margin-left: 15px; margin-bottom: 25px;">
-        {% if user.is_authenticated %}
-            {% if own_review %}
-            <div id="my-review">
-                <p style="color: black;">Your Review:</p>
-                {% for star in own_review.actual_rating %}
-                    <span class="fa fa-star checked" style="color : yellow"></span>
-                {% endfor %}
-                {% for rate in own_review.hidden_rating %}
-                    <span class="fa fa-star" style="color : silver"></span>
-                {% endfor %}
-                <p>Comment:</p>
-                <p>{{ own_review.review }}</p>
-                <div>
-                    <form action="{% url 'delete-review' own_review.id%}" method='POST'>
-                        {% csrf_token %}
-                        <button type="submit" class="genric-btn primary circle btn-xs" style="float: right; " name ="Delete" > Delete</button>
-                    </form>
-                    <button id="btn-edit" class="genric-btn info circle btn-xs" style="float: right; margin-right: 15px;">Edit</button>
-                </div>
-            </div>
-            <div id="edit-review" style="display: none;">
-                <form  method="post" enctype="multipart/form-data" class="formsWidth">
-                    {% csrf_token %}
-                    {{ review_form|crispy }}
-                    <textarea name="review" class="single-textarea" placeholder="Comment" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Comment'" required></textarea>
-                    <button type="submit" class="genric-btn info circle" style="float: right">Review</button>
-                </form>
-                <button id="btn-cancle" class="genric-btn primary circle btn-xs" style="float: right; margin-right: 15px;">Cancle</button>
-            </div>
-                
-            {% else %}
-            <form method="post" enctype="multipart/form-data" class="formsWidth">
-                {% csrf_token %}
-                {{ review_form|crispy }}
-                <textarea name="review" class="single-textarea" placeholder="Comment" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Comment'" required></textarea>
-                <button type="submit" class="genric-btn primary circle" style="float: right">Review</button>
-            </form>
             {% endif %}
-        {% else %}
-            <a href="{% url 'login' %}"><button class="btn btn-primary btn-xs" style="float: right">Ratting (login)</button></a>
-        {% endif %}
         </div>
-        <br/>
+        </form>
+    </div>
+    <div class="col-md-8">
+        <h3 class="book_title"><strong>{{ book.title }}</strong> </h3><br>
+        <h5 class="line_space"><strong>Author:</strong> {{ book.author }}</h5>
+        <h5 class="line_space"><strong>Category:</strong> {{ book.category }}</h5>
+        <p class="line_space"><strong>Desciption:</strong></p>
+        <p class="line_space"> {{ book.desc }}</p>
+        <div style="margin-left: 15px; margin-bottom: 25px;">
+            {% if user.is_authenticated %}
+                {% if own_review %}
+                    <div id="my-review">
+                        <p style="color: black;">Your Review:</p>
+                        {% for star in own_review.actual_rating %}
+                        <span class="fa fa-star checked" style="color : yellow"></span>
+                        {% endfor %}
+                        {% for rate in own_review.hidden_rating %}
+                        <span class="fa fa-star" style="color : silver"></span>
+                        {% endfor %}
+                        <p>Comment:</p>
+                        <p>{{ own_review.review }}</p>
+                        <div>
+                            <form action="{% url 'delete-review' own_review.id%}" method='POST'>
+                                {% csrf_token %}
+                                <button type="submit" class="genric-btn primary circle btn-xs" style="float: right; "
+                                    name="Delete"> Delete</button>
+                            </form>
+                            <button id="btn-edit" class="genric-btn info circle btn-xs"
+                                style="float: right; margin-right: 15px;">Edit</button>
+                        </div>
+                    </div>
+                    <div id="edit-review" style="display: none;">
+                        {% csrf_token %}
+                        {{ review_form|crispy }}
+                        <textarea id="review-area" name="review" class="single-textarea" placeholder="Add review ..."
+                            onblur="this.placeholder = 'review'" required></textarea>
+                        <button id="send-review" class="review-submit genric-btn info circle"
+                            style="float: right">Review</button>
+                        <button id="btn-cancle" class="genric-btn primary circle btn-xs"
+                            style="float: right; margin-right: 15px;">Cancle</button>
+                    </div>
+
+                {% else %}
+                    <form method="post" enctype="multipart/form-data" class="formsWidth"></form>
+                        {% csrf_token %}
+                        {{ review_form|crispy }}
+                        <textarea id="review-area" name="review" class="single-textarea" placeholder="Add review ..."
+                            onblur="this.placeholder = 'review'" required></textarea>
+                        <button id="send-review2" class="review-submit genric-btn info circle"
+                            style="float: right">Review</button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}"><button class="btn btn-primary btn-xs" style="float: right">Ratting
+                        (login)</button></a>
+            {% endif %}
+        </div>
+        <br />
         <hr class="my-4">
         {% if ratings %}
         <h6 style="color: black;">Reviews({{ratings.count}}):</h6>
+        {% endif %}
+        <div id="show-review">
+            {% if ratings %}
             {% for rating in ratings %}
             <div>
+                {% include 'include/rating.html' %}
                 <div>
-                <h6 style="color: black; font-weight: lighter;"><strong>{{ rating.user.username }}</strong></h6>
-                {% for star in rating.actual_rating %}
-                    <span class="fa fa-star checked" style="color : yellow"></span>
-                {% endfor %}
-                {% for rate in rating.hidden_rating %}
-                    <span class="fa fa-star" style="color : silver"></span>
-                {% endfor %}
-                <p style="color: rgb(39, 36, 36);">{{ rating.review }}</p>
-                </div>
-                <div >
                     {% if user.is_authenticated %}
-                        <form method="post" enctype="multipart/form-data" class="formsWidth">
-                            {% csrf_token %}
-                            {{ comment_form|crispy }}
-                            <textarea name="comment" class="single-textarea" placeholder="Comment" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Comment'" required></textarea>                   
-                            <input name="rating" type="hidden" value={{ rating.id }}/>
-                            <button type="submit" class="genric-btn info circle" style="float: right">Comment</button>
-                        </form>
+                    <form method="post" enctype="multipart/form-data" class="formsWidth">
+                        {% csrf_token %}
+                        {{ comment_form|crispy }}
+                        <textarea name="comment" class="single-textarea" placeholder="Comment"
+                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'Comment'" required></textarea>
+                        <input name="rating" type="hidden" value={{ rating.id }} />
+                        <button type="submit" class="genric-btn info circle" style="float: right">Comment</button>
+                    </form>
                     {% else %}
-                        <a href="{% url 'login' %}"><button class="btn btn-primary btn-xs" style="float: right">Comment (login)</button></a>
+                    <a href="{% url 'login' %}"><button class="btn btn-primary btn-xs" style="float: right">Comment
+                            (login)</button></a>
                     {% endif %}
-               
-                <div style="margin-left: 50px; margin-top: 20px;">
-                {% if rating.comment_set.all %}
-                {% for comment in rating.comment_set.all %}
-                    <p style="color: black;"> {{comment.user.username}}</p>
-                    <p > {{ comment.comment }}</p>
-                {% endfor %}
-                {% endif %}
+
+                    <div style="margin-left: 50px; margin-top: 20px;">
+                        {% if rating.comment_set.all %}
+                        {% for comment in rating.comment_set.all %}
+                        <p style="color: black;"> {{comment.user.username}}</p>
+                        <p> {{ comment.comment }}</p>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
-                </div>
-                <br/>
+                <br />
                 <hr class="my-4">
             </div>
-                {% endfor %}		
-        {% else %}
+            {% endfor %}
+            {% else %}
             <h6>No comments yet</h6>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+<script>
+    $('#send-review').on('click', () => {
+        star = $('#id_star').val()
+        review = $('#review-area').val()
+        console.log("send")
+        chatSocket.send(JSON.stringify({
+            'userId': "{{request.user.id}}",
+            'star': star,
+            'review': review,
+            'bookId': "{{book.id}}"
+        }));
+        console.log("send xong")
+    })
+
+    $('#send-review2').on('click', () => {
+        star = $('#id_star').val()
+        review = $('#review-area').val()
+        chatSocket.send(JSON.stringify({
+            'userId': "{{request.user.id}}",
+            'star': star,
+            'review': review,
+            'bookId': "{{book.id}}"
+        }));
+        review = $('#review-area').val('')
+
+    })
+
+    const roomName = "{{ book.id }}";
+    // alert(roomName);
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/review/books/'
+        + roomName
+        + '/'
+    );
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data)
+        console.log('minhdan')
+        $('#show-review').prepend(
+            `   <div>
+                    ${data.html_render}
+                <div>
+                {% if user.is_authenticated %}
+                <form method="post" enctype="multipart/form-data" class="formsWidth">
+                    {% csrf_token %}
+                    {{ comment_form|crispy }}
+                    <textarea name="comment" class="single-textarea" placeholder="Comment"
+                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Comment'" required></textarea>
+                    <input name="rating" type="hidden" value={{ rating.id }} />
+                    <button type="submit" class="genric-btn info circle" style="float: right">Comment</button>
+                </form>
+                {% else %}
+                <a href="{% url 'login' %}"><button class="btn btn-primary btn-xs" style="float: right">Comment
+                        (login)</button></a>
+                {% endif %}
+
+                <div style="margin-left: 50px; margin-top: 20px;">
+                    {% if rating.comment_set.all %}
+                    {% for comment in rating.comment_set.all %}
+                    <p style="color: black;"> {{comment.user.username}}</p>
+                    <p> {{ comment.comment }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <br />
+            <hr class="my-4">
+            </div>
+            `)
+    };
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+
+</script>
 {% endblock %}
