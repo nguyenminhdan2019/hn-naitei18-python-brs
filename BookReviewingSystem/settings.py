@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'notifications',
     'django.contrib.humanize',
     'social_django',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -129,7 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
 
 
 TIME_ZONE = 'UTC'
@@ -146,10 +147,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LANGUAGES = (
-    ('en-us', _('English')),
-    ('vi-vi', _('Vietnamese')),
-)
+LANGUAGE_CODE = 'en-us'
+LANGUAGES = [
+    ('en-us', 'English'),
+    ('vi-vi', 'Vietnamese'),
+]
 
 LOGIN_REDIRECT_URL = '/review/'
 LOGOUT_REDIRECT_URL = '/review/'
@@ -173,3 +175,7 @@ SOCIAL_AUTH_FACEBOOK_SECRET = env('SOCIAL_AUTH_FACEBOOK_SECRET')
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+
+CRONJOBS = [
+    ('0 0 1 * *', 'review.cron.send_mail_cron_job')
+]
