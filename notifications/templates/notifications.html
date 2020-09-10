@@ -2,54 +2,46 @@
 {% block banner %}{% endblock %}
 {% load static %}
 {% load humanize %}
-
 {% block content %}
 
-    <div class="columns is-mobile is-centered pt-70 container" style="margin: 0 auto;">
+<div class="columns is-mobile is-centered pt-70 container" style="margin: 0 auto;">
     <div class="column is-half" style="width: 60%; margin: 0 auto;">
         <h1 class="text-center">Notification</h1><br>
-    {% for notification in notifications %}
-        {% if notification.notification_type == 2 %}
-            <div class="notification" style="display: flex;">
-                <div class="col-md-9">
-                    <article class="media">
-                        <div class="media-content">
-                            <div class="content" style="text-justify:center;">
-                                <strong><a href="{% url 'UserDetail' notification.sender.id %}">@{{notification.sender.username }}</a></strong> 
-                                <br>
-                                <p><i class="material-icons"></i> {{notification.sender.username}} Followed you!</p>
-                                <strong><small>{{ notification.date|naturaltime }}</small></strong>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-                <div>
-                    <a href="{% url 'delete-notification' notification.id %}" class="delete" style="text-align: center;">Delete</a>
-                </div>
-            </div>
-        {% endif %}
+        <div class="notifications-area">
+            {% for notification in notifications %}
+            {% if notification.notification_type == 2 %}
+                {% include 'includes/followNotification.html' %}
+            {% endif %}
+            {% if notification.notification_type == 1 %}
+                {% include 'includes/requestNotification.html' %}
+            {% endif %}
+            <hr />
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script>
+    const roomName = 'room1';
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/notifications/'
+        // + roomName
+        // + '/'
+    );
 
-        {% if notification.notification_type == 1 %}
-            <div class="notification" style="display: flex;">
-                <div class="col-md-9">
-                    <article class="media">
-                        <div class="media-content">
-                            <div class="content">
-                                <strong><a href="#">@System</a></strong> 
-                                <br>
-                                <p><i class="material-icons"></i> System : {{notification.text_preview}} </p>
-                                <strong><small>{{ notification.date|naturaltime }}</small></strong>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-                    <div>
-                        <a href="{% url 'delete-notification' notification.id %}" class="delete">Delete</a>
-                    </div>
-                </div>
-        {% endif %}
+    chatSocket.onmessage = function (e) {
+        console.log('bat tin nhan tu server');
+        const data = JSON.parse(e.data);
+        message = JSON.parse(data.message)
+        if(message.to_user == "{{request.user.username}}"){
+            $('.notifications-area').prepend(data.html_render)
+        }
+    };
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
 
-        <hr/>
+</script>
 
-    {% endfor %}
 {% endblock %}

@@ -1,0 +1,12 @@
+            <div>
+                <div>
+                <h6 style="color: black; font-weight: lighter;"><strong>{{ rating.user.username }}</strong></h6>
+                {% for star in rating.actual_rating %}
+                    <span class="fa fa-star checked" style="color : yellow"></span>
+                {% endfor %}
+                {% for rate in rating.hidden_rating %}
+                    <span class="fa fa-star" style="color : silver"></span>
+                {% endfor %}
+                <p style="color: rgb(39, 36, 36);">{{ rating.review }}</p>
+                </div>
+            </div>

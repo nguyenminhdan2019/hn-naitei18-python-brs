@@ -1,0 +1,19 @@
+{% load static %}
+{% load humanize %}
+<div class="notification" style="display: flex;">
+    <div class="col-md-9">
+        <article class="media">
+            <div class="media-content">
+                <div class="content">
+                    <strong><a href="#">@System</a></strong>
+                    <br>
+                    <p><i class="material-icons"></i> System : {{notification.text_preview}} </p>
+                    <strong><small>{{ notification.date|naturaltime }}</small></strong>
+                </div>
+            </div>
+        </article>
+    </div>
+    <div>
+        <a href="{% url 'delete-notification' notification.id %}" class="delete">Delete</a>
+    </div>
+</div>

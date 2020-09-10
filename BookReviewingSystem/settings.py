@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'social_django',
     'django_crontab',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -179,3 +180,13 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 CRONJOBS = [
     ('0 0 1 * *', 'review.cron.send_mail_cron_job')
 ]
+ASGI_APPLICATION = 'BookReviewingSystem.routing.application'
+
+CHANNEL_LAYERS = {
+        'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('localhost', 6379)],
+        },
+    },
+}

@@ -15,7 +15,7 @@ def ShowNOtifications(request):
 
 	context = {
 		'notifications': notifications,
-	}
+	}	
 
 	return HttpResponse(template.render(context, request))
 

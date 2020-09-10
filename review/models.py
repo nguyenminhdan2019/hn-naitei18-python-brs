@@ -192,3 +192,4 @@ class Activity(models.Model):
         blank=True,
     )
     activity = models.TextField()
+
